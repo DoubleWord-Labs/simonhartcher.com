@@ -22,3 +22,12 @@ await Bun.build({
     naming: "[dir]/main.min.[ext]",
     minify: true,
 });
+
+// Format assets.zig file
+console.log("Formatting assets.zig file...");
+try {
+    await $`zig fmt assets.zig`;
+    console.log('Successfully formatted assets.zig');
+} catch (error) {
+    console.warn(`Could not format assets.zig: ${error.message}`);
+}

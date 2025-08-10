@@ -360,30 +360,4 @@ for (const file of assetFiles) {
 writer.write("};");
 writer.close();
 
-// Format the file using zig fmt
-console.log("Formatting assets.zig file...");
-try {
-  // Security: Use absolute path or which to find zig binary to prevent PATH manipulation
-  const { execSync: execSyncWithPath } = require('child_process');
-  let zigPath: string;
-  
-  try {
-    // Try to find zig in PATH safely
-    zigPath = execSyncWithPath('which zig 2>/dev/null || where zig 2>nul', { encoding: 'utf8' }).toString().trim();
-    if (!zigPath) {
-      throw new Error('zig not found in PATH');
-    }
-  } catch {
-    // Fallback to common installation paths
-    const commonPaths = ['/usr/local/bin/zig', '/usr/bin/zig', 'C:\\zig\\zig.exe'];
-    zigPath = commonPaths.find(p => fs.existsSync(p)) || 'zig';
-  }
-  
-  // Execute with validated path
-  execSync(`"${zigPath}" fmt assets.zig`, { stdio: 'pipe' });
-  console.log('Successfully formatted assets.zig');
-} catch (error) {
-  console.warn(`Could not format assets.zig: ${error.message}`);
-}
-
 console.log("Done processing images!");
