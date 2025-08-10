@@ -1,5 +1,13 @@
 import Bun from 'bun';
+import { $ } from "bun";
 
+// Process images first
+console.log("Processing images...");
+for await (const line of $`bun src/scripts/processImages.ts`.lines()) {
+    console.info(line);
+}
+
+// Build CSS
 await Bun.build({
     entrypoints: ["assets/styles.css"],
     outdir: "assets",
@@ -7,6 +15,7 @@ await Bun.build({
     minify: true,
 })
 
+// Build JS
 await Bun.build({
     entrypoints: ["index.ts"],
     outdir: "assets",
