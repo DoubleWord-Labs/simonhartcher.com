@@ -1,18 +1,14 @@
 {
   "scripts": {
-    "sync": "bun src/scripts/notion2md.ts",
+    "process-images": "bun src/scripts/processImages.ts",
     "prebuild": "bun build.ts",
     "build": "zig build",
     "dev": "bun dev.ts",
     "predev": "npx rimraf zig-out"
   },
   "dependencies": {
-    "@notionhq/client": "^2.2.15",
     "alpinejs": "^3.14.8",
     "moment": "^2.30.1",
-    "notion-client": "^7.1.6",
-    "notion-to-md": "^3.1.4",
-    "notion-utils": "^7.1.6",
     "ramda": "^0.30.1",
     "sharp": "^0.33.5"
   },

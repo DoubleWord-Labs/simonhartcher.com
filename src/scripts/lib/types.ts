@@ -1,37 +1,12 @@
-import {
-  CheckboxPropertyItemObjectResponse,
-  DatePropertyItemObjectResponse,
-  Heading1BlockObjectResponse,
-  ImageBlockObjectResponse,
-  MultiSelectPropertyItemObjectResponse,
-  PageObjectResponse,
-  ParagraphBlockObjectResponse,
-  PropertyItemObjectResponse,
-  RichTextItemResponse,
-  RichTextPropertyItemObjectResponse,
-  TitlePropertyItemObjectResponse,
-} from "@notionhq/client/build/src/api-endpoints";
-
-type RichTextArrayObjectResponse = ParagraphBlockObjectResponse['paragraph'];
-
-export interface Properties {
-  Date: DatePropertyItemObjectResponse;
-  Published: DatePropertyItemObjectResponse;
-  Name: {
-    title: RichTextItemResponse[];
-  };
-  Description: RichTextArrayObjectResponse;
-  Tags: MultiSelectPropertyItemObjectResponse;
-  Author: RichTextPropertyItemObjectResponse;
-  Tweet: RichTextPropertyItemObjectResponse;
-  Slug: RichTextArrayObjectResponse;
-  Featured: CheckboxPropertyItemObjectResponse;
-  Public: CheckboxPropertyItemObjectResponse;
+// Basic types for local image processing workflow
+export interface ImageSize {
+  width: number;
+  height: number;
 }
 
-export type PageObjectResponseWithProperties = Omit<
-  PageObjectResponse,
-  "properties"
-> & {
-  properties: Properties;
-};
+export interface ImageReference {
+  filePath: string;
+  imageName: string;
+  altText: string;
+  className?: string;
+}

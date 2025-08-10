@@ -11,7 +11,7 @@ const doBuild = async () => {
 
 await doBuild();
 
-const include = ["src", "assets/styles.css"];
+const include = ["src", "assets/styles.css", "content/images", "content/posts/images", "content/pages/images"];
 
 watch(
   import.meta.dir,
