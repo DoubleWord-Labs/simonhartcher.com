@@ -14,5 +14,8 @@
     "@astrojs/sitemap": "^3.4.2",
     "alpinejs": "^3.14.9",
     "astro": "^5.12.9"
+  },
+  "devDependencies": {
+    "astro-mcp": "^0.4.1"
   }
 }

@@ -17,6 +17,7 @@
     "@types/bun": "latest",
     "@types/node-static": "^0.7.11",
     "@types/ramda": "^0.30.2",
+    "astro-mcp": "^0.4.1",
     "node-static": "^0.7.11"
   },
   "name": "simonhartcher.com",
