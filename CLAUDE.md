@@ -111,3 +111,4 @@ Zine uses `.shtml` templates with a custom templating syntax:
 2. `build.zig` configures Zine with content/layout/asset paths
 3. Zine generates the complete static site in `zig-out/`
 4. Development server (`dev.ts`) watches for changes including image directories and rebuilds automatically
+- Check your current working directory if commands fail
