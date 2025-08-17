@@ -166,4 +166,28 @@ if (post.data.cover) {
   .post-content :global(li) {
     margin-bottom: 0.5rem;
   }
+  
+  .post-content :global(img) {
+    display: block;
+    margin: 1.5rem auto;
+    max-width: 100%;
+    height: auto;
+    border-radius: 0.5rem;
+  }
+  
+  /* Allow overriding centering with specific classes */
+  .post-content :global(img.left) {
+    margin-left: 0;
+    margin-right: auto;
+  }
+  
+  .post-content :global(img.right) {
+    margin-left: auto;
+    margin-right: 0;
+  }
+  
+  .post-content :global(img.inline) {
+    display: inline;
+    margin: 0;
+  }
 </style>
