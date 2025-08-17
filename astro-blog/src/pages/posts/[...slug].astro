@@ -20,8 +20,8 @@ const { Content } = await render(post);
 let coverImage;
 if (post.data.cover) {
   try {
-    // Convert cover path from /blog/post-name/image.webp to ../../assets/post-name/image.webp
-    const imagePath = post.data.cover.replace('/blog/', '../../assets/');
+    // Convert cover path from /posts/post-name/image.webp to ../../assets/post-name/image.webp
+    const imagePath = post.data.cover.replace('/posts/', '../../assets/');
     const modules = import.meta.glob('../../assets/**/*.{webp,jpg,jpeg,png}', { eager: true });
     coverImage = modules[imagePath]?.default;
   } catch (error) {
@@ -81,7 +81,8 @@ if (post.data.cover) {
   
   .cover-image .cover {
     width: 100%;
-    height: auto;
+    height: 300px;
+    object-fit: cover;
     border-radius: 0.5rem;
   }
   
