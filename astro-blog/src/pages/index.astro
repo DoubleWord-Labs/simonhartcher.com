@@ -4,94 +4,89 @@ import Base from '../layouts/Base.astro';
 
 // Get blog posts
 const posts = await getCollection('blog');
-const sortedPosts = posts
+const allPosts = posts
   .filter((post) => !post.data.draft)
-  .sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf())
-  .slice(0, 5); // Show latest 5 posts
+  .sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf());
+
+const featuredPosts = allPosts.filter(post => post.data.featured);
 ---
 
 <Base title="Simon Hartcher" description="Simon Hartcher's Blog - Software Development, Web Development, and Technology">
-  <section>
-    <h1>Welcome to my blog</h1>
-    <p>I write about software development, web development, and technology.</p>
-  </section>
-
-  <section>
-    <h2>Recent Posts</h2>
-    <div class="posts-grid">
-      {sortedPosts.map((post) => (
-        <article class="post-card">
-          <h3>
-            <a href={`/blog/${post.id.replace('.mdx', '')}`}>
-              {post.data.title}
+  <main id="page">
+    <!-- Page content would go here if this was a content page -->
+  </main>
+  
+  {featuredPosts.length > 0 && (
+    <>
+      <h1>Featured</h1>
+      {featuredPosts.map((post) => (
+        <article class="blog-post__featured">
+          <a href={`/posts/${post.id.replace('.mdx', '')}`}>
+            {post.data.cover && (
+              <picture>
+                <img src={post.data.cover} alt="Cover image" class="cover" />
+              </picture>
+            )}
+          </a>
+          <div class="blog-post__card__content">
+            <a href={`/posts/${post.id.replace('.mdx', '')}`} class="blog-post-card" aria-label={`Read ${post.data.title}`}>
+              <h5>{post.data.title}</h5>
             </a>
-          </h3>
-          <p class="post-meta">
-            <time datetime={post.data.date.toISOString()}>
-              {post.data.date.toLocaleDateString('en-US', {
-                year: 'numeric',
-                month: 'long', 
-                day: 'numeric'
-              })}
-            </time>
-          </p>
-          {post.data.description && (
-            <p>{post.data.description}</p>
-          )}
-          <div class="tags">
-            {post.data.tags.map((tag) => (
-              <span class="tag">{tag}</span>
-            ))}
+            {post.data.description && (
+              <p>{post.data.description}</p>
+            )}
+            <aside>
+              <small>
+                Published on
+                <time datetime={post.data.date.toISOString()}>
+                  {post.data.date.toLocaleDateString('en-US', {
+                    day: 'numeric',
+                    month: 'long',
+                    year: 'numeric'
+                  })}
+                </time>
+                by
+                <a href="/about"><strong>{post.data.author}</strong></a>
+              </small>
+            </aside>
           </div>
         </article>
       ))}
-    </div>
-  </section>
+    </>
+  )}
+
+  <h1>Recent Posts</h1>
+  {allPosts.map((post) => (
+    <article class="blog-post__card">
+      <a href={`/posts/${post.id.replace('.mdx', '')}`} class="blog-post__card__cover-thumb__container">
+        <picture>
+          <source srcset={`/posts/${post.id.replace('.mdx', '')}/cover-thumbnail.webp 300w, /posts/${post.id.replace('.mdx', '')}/cover-small.webp 600w`} sizes="50vw" />
+          <img class="blog-post__card__cover-thumb" src={`/posts/${post.id.replace('.mdx', '')}/cover-thumbnail.webp`} alt="Cover image" />
+        </picture>
+      </a>
+      <div class="blog-post__card__content">
+        <a href={`/posts/${post.id.replace('.mdx', '')}`} class="blog-post-card" aria-label={`Read ${post.data.title}`}>
+          <h5>{post.data.title}</h5>
+        </a>
+        {post.data.description && (
+          <p>{post.data.description}</p>
+        )}
+        <aside>
+          <small>
+            Published on
+            <time datetime={post.data.date.toISOString()}>
+              {post.data.date.toLocaleDateString('en-US', {
+                day: 'numeric',
+                month: 'long',
+                year: 'numeric'
+              })}
+            </time>
+            by
+            <a href="/about"><strong>{post.data.author}</strong></a>
+          </small>
+        </aside>
+      </div>
+    </article>
+  ))}
 </Base>
 
-<style>
-  .posts-grid {
-    display: grid;
-    gap: 2rem;
-    margin-top: 1rem;
-  }
-  
-  .post-card {
-    border-bottom: 1px solid var(--pico-border-color);
-    padding-bottom: 1rem;
-  }
-  
-  .post-card h3 {
-    margin: 0 0 0.5rem 0;
-  }
-  
-  .post-card h3 a {
-    text-decoration: none;
-    color: var(--pico-color);
-  }
-  
-  .post-card h3 a:hover {
-    color: var(--pico-primary);
-  }
-  
-  .post-meta {
-    color: var(--pico-muted-color);
-    font-size: 0.9rem;
-    margin: 0 0 0.5rem 0;
-  }
-  
-  .tags {
-    display: flex;
-    gap: 0.5rem;
-    flex-wrap: wrap;
-    margin-top: 0.5rem;
-  }
-  
-  .tag {
-    background: var(--pico-secondary-background);
-    padding: 0.25rem 0.5rem;
-    border-radius: 0.25rem;
-    font-size: 0.8rem;
-    color: var(--pico-secondary);
-  }
-</style>

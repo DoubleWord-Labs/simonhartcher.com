@@ -1,4 +1,7 @@
 ---
+import '../pico.violet.min.css';
+import '../styles.css';
+
 export interface Props {
   title: string;
   description?: string;
@@ -28,8 +31,6 @@ const fullTitle = title ? `${title} | ${siteTitle}` : siteTitle;
     {image && <meta property="og:image" content={image}>}
     <meta http-equiv="x-ua-compatible" content="ie=edge">
     <title>{fullTitle}</title>
-    <link rel="stylesheet" href="/pico.violet.min.css">
-    <link rel="stylesheet" href="/styles.min.css">
     <link rel="alternate" type="application/rss+xml" title="Simon Hartcher's Blog RSS Feed" href="/index.xml">
     <script defer src="/main.min.js"></script>
   </head>

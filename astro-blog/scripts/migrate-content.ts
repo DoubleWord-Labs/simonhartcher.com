@@ -6,10 +6,11 @@ import path from 'path';
 interface ZineFrontmatter {
   date: string;
   title: string;
-  description: string;
+  description?: string;
   tags: string[];
   author: string;
   layout: string;
+  draft?: boolean;
   aliases?: string[];
   custom?: {
     cover?: string;
@@ -31,7 +32,11 @@ interface AstroFrontmatter {
 }
 
 function parseZineFrontmatter(content: string): { frontmatter: ZineFrontmatter; body: string } {
-  const match = content.match(/^---\n([\s\S]*?)\n---\n\n([\s\S]*)$/);
+  // Try with double newline first, then single newline
+  let match = content.match(/^---\n([\s\S]*?)\n---\n\n([\s\S]*)$/);
+  if (!match) {
+    match = content.match(/^---\n([\s\S]*?)\n---\n([\s\S]*)$/);
+  }
   if (!match) {
     throw new Error('Invalid frontmatter format');
   }
@@ -93,14 +98,58 @@ function convertToAstroFrontmatter(zineFm: ZineFrontmatter): AstroFrontmatter {
     cover: zineFm.custom?.cover?.match(/src='([^']*)'/)?.at(1)?.replace('/..', ''),
     preview: zineFm.custom?.preview,
     featured: zineFm.custom?.featured || false,
-    draft: false,
+    draft: zineFm.draft || false,
   };
 }
 
 function processImages(content: string): string {
-  // Convert existing picture elements to Astro Image component imports
-  // For now, keep the existing picture elements as they work fine in MDX
-  return content;
+  // Convert HTML picture elements from code blocks to Astro Image components
+  let processedContent = content;
+  
+  // Extract image imports that will be needed
+  const imageImports = new Set<string>();
+  let needsImageImport = false;
+  
+  // Find HTML code blocks with picture elements (these were Zine's =html blocks)
+  processedContent = processedContent.replace(/```html\n(<picture>.*?<\/picture>)\n```/g, (match, pictureHtml) => {
+    // Extract the main image src from the picture element
+    const imgMatch = pictureHtml.match(/<img src="([^"]*)"[^>]*alt="([^"]*)"[^>]*>/);
+    if (imgMatch) {
+      const [, src, alt] = imgMatch;
+      
+      // Convert the src path to the correct format
+      const cleanSrc = src.replace('/..', '').replace('/posts/', '/blog/');
+      needsImageImport = true;
+      
+      // Return Astro Image component
+      return `<Image src="${cleanSrc}" alt="${alt}" />`;
+    }
+    
+    // If we can't parse it, return as-is
+    return match;
+  });
+  
+  // Fix code block language issues
+  processedContent = processedContent
+    // Replace =html with html for remaining code blocks
+    .replace(/```=html/g, '```html')
+    // Replace c-sharp with csharp
+    .replace(/```c-sharp/g, '```csharp')
+    // Fix any unclosed HTML tags in code blocks by converting them to code blocks
+    .replace(/<head>/g, '`<head>`')
+    .replace(/<\/head>/g, '`</head>`')
+    // Fix any other problematic HTML tags
+    .replace(/<meta([^>]*)>/g, '`<meta$1>`')
+    .replace(/<link([^>]*)>/g, '`<link$1>`')
+    .replace(/<script([^>]*)>/g, '`<script$1>`')
+    .replace(/<\/script>/g, '`</script>`');
+  
+  // Add Image import at the top if needed
+  if (needsImageImport) {
+    processedContent = `import { Image } from 'astro:assets';\n\n${processedContent}`;
+  }
+    
+  return processedContent;
 }
 
 function convertToMDX(smdPath: string, outputDir: string): void {
@@ -148,8 +197,7 @@ function migrateContent() {
   
   // Migrate blog posts
   const postFiles = fs.readdirSync(sourceDir)
-    .filter(file => file.endsWith('.smd'))
-    .slice(0, 3); // Start with first 3 posts for testing
+    .filter(file => file.endsWith('.smd')); // Migrate all posts
   
   console.log('Migrating blog posts...');
   for (const file of postFiles) {
@@ -158,7 +206,7 @@ function migrateContent() {
   }
   
   // Migrate pages (about, contact, etc.)
-  const pageFiles = ['about.smd', 'contact.smd']
+  const pageFiles = ['about.smd', 'contact.smd', 'subscribe.smd']
     .filter(file => fs.existsSync(path.join(pagesSourceDir, file)));
   
   console.log('Migrating pages...');

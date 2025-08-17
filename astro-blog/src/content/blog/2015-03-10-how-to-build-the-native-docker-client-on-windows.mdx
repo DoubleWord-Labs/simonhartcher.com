@@ -9,6 +9,9 @@ preview: "cover-small.webp"
 featured: false
 draft: false
 ---
+import ac86256d_7540_426d_a103_698c5b1654ac_medium from '@assets/2015-03-10-how-to-build-the-native-docker-client-on-windows/ac86256d-7540-426d-a103-698c5b1654ac-medium.webp';
+
+import { Image } from 'astro:assets';
 
 # Requisites
 
@@ -99,9 +102,7 @@ go build -v
 You should then have a nice new `docker.exe` file in the current directory. You can add this directory to your `PATH` or alternatively run `shim ./docker.exe` if you have shim from scoop installed (`scoop install shim`).
 
 
-```=html
-<picture><source type="image/webp" srcset="/../posts/2015-03-10-how-to-build-the-native-docker-client-on-windows/ac86256d-7540-426d-a103-698c5b1654ac-thumbnail.webp 300w, /../posts/2015-03-10-how-to-build-the-native-docker-client-on-windows/ac86256d-7540-426d-a103-698c5b1654ac-small.webp 600w, /../posts/2015-03-10-how-to-build-the-native-docker-client-on-windows/ac86256d-7540-426d-a103-698c5b1654ac-medium.webp 900w," sizes="100vw"><img src="/../posts/2015-03-10-how-to-build-the-native-docker-client-on-windows/ac86256d-7540-426d-a103-698c5b1654ac-medium.webp" alt="Image" class=""></picture>
-```
+<Image src={ac86256d_7540_426d_a103_698c5b1654ac_medium} alt="Image" />
 
 
 
