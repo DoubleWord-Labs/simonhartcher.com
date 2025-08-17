@@ -7,3 +7,4 @@ assets/styles.min.css
 *.*~
 assets/main.min.js
 .claude/settings.local.json
+.vscode/
