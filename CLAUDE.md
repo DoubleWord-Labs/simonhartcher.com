@@ -4,52 +4,53 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-This is Simon Hartcher's personal blog built with Zine (a Zig-based static site generator) with local content management. The site combines Zig for the static site generation with TypeScript/JavaScript tooling for asset building and image processing.
+This is Simon Hartcher's personal blog built with Astro, a modern static site generator. The site uses Astro's content collections, React components for interactivity, and optimized asset handling.
 
 ## Architecture
 
 ### Core Components
-- **Zine SSG**: The site is built using Zine, a static site generator written in Zig
-- **Local Content Management**: Blog content is authored directly as `.smd` files (structured markdown)
-- **Asset Processing**: Images are automatically processed and optimized in multiple sizes (thumbnail, small, medium, large, xlarge, original)
-- **Alpine.js**: Used for lightweight frontend interactivity
-- **Content Pipeline**: Local Images → Processing → WebP optimization → Static HTML generation
+- **Astro SSG**: The site is built using Astro with server-side rendering and static generation
+- **Content Collections**: Blog content is authored as `.mdx` files with type-safe frontmatter
+- **Asset Processing**: Images are handled by Astro's built-in image optimization
+- **React Components**: Used for interactive elements like comments (Giscus)
+- **Pico CSS**: Lightweight CSS framework for styling (violet theme)
 
 ### Directory Structure
-- `content/`: Contains `.smd` files (structured markdown with frontmatter) for pages and posts
-- `layouts/`: Zine templates (`.shtml` files) for different page types
-- `assets/`: Static assets including processed images and CSS/JS files
-- `src/scripts/`: TypeScript utilities for Notion sync and asset processing
-- `zig-out/`: Build output directory (generated)
+- `src/content/`: Contains `.mdx` files organized in collections (blog, pages)
+- `src/layouts/`: Astro layout components
+- `src/components/`: React and Astro components
+- `src/assets/`: Static assets including optimized images
+- `src/pages/`: Astro page routes and API endpoints
+- `public/`: Static files served directly
+- `dist/`: Build output directory (generated)
 
 ### Key Files
-- `build.zig`: Zine build configuration
-- `assets.zig`: Auto-generated asset manifest for Zine
-- `src/scripts/processImages.ts`: Main image processing script for local files
-- `src/scripts/config.ts`: Configuration for local paths and image processing
+- `astro.config.mjs`: Astro configuration with integrations
+- `src/content/config.ts`: Content collection schemas
+- `src/components/Comments.tsx`: Giscus comments React component
+- `src/layouts/Base.astro`: Main layout template
 
 ## Development Commands
 
 ### Content Management
 ```bash
-# Process local images and generate optimized variants
-bun run process-images
-
-# Clean build output before development
-bun run predev
-
-# Start development server with file watching on port 1990
+# Start development server
 bun run dev
+
+# Build the site
+bun run build
+
+# Preview the built site
+bun run preview
 ```
 
 ### Building
 ```bash
-# Build frontend assets (CSS/JS minification)
-bun run prebuild
-
-# Build the entire site using Zig/Zine
+# Build the entire site
 bun run build
-# Equivalent to: zig build
+
+# Preview production build
+bun run preview
 ```
 
 ### Dependencies
@@ -61,53 +62,61 @@ bun install
 ## Content Creation Workflow
 
 ### Creating New Posts
-1. Create a new `.smd` file in `content/posts/` with naming format: `YYYY-MM-DD-post-title.smd`
+1. Create a new `.mdx` file in `src/content/blog/` with naming format: `YYYY-MM-DD-post-title.mdx`
 2. Add frontmatter with title, date, description, tags, etc.
-3. Place source images in `content/posts/images/` or `content/images/`
-4. Reference images in markdown: `![alt text](images/filename.jpg)`
-5. Run `bun run process-images` to generate optimized versions
-6. Build with `bun run build`
+3. Place optimized images in `src/assets/` in appropriate directories
+4. Reference images in markdown: `![alt text](../../assets/image.webp)`
+5. Build with `bun run build`
 
 ### Image Directory Structure
 ```
-content/
-├── images/          # Global images
-├── posts/
-│   ├── images/      # Post-specific images
-│   └── *.smd        # Post content files
-└── pages/
-    └── images/      # Page-specific images
+src/assets/
+├── about/           # About page images
+├── contact/         # Contact page images
+└── YYYY-MM-DD-*/    # Post-specific image directories
 ```
 
 ## Content Workflow
 
-1. Content is created/edited as `.smd` files in `content/`
-2. Source images are placed in appropriate `images/` directories
-3. Running `bun run process-images` processes images into multiple sizes and saves in `assets/`
-4. `assets.zig` is regenerated with updated asset references
-5. Zine builds the static site from the content files and templates
-
-## Asset Processing
-
-The image processing system in `src/scripts/lib/images.ts` automatically:
-- Scans local directories for source images
-- Generates multiple sizes (thumbnail: 300x200, small: 600x400, medium: 900x600, large: 1200x800, xlarge: 1800x1200, plus original)
-- Converts to WebP format for optimization (80% quality, smart subsampling)
-- Creates responsive HTML with `<picture>` elements and `srcset`
-- Updates asset references in the generated `assets.zig` file
-- Cleans up unused processed images
+1. Content is created/edited as `.mdx` files in `src/content/`
+2. Images are placed in `src/assets/` in organized directories
+3. Astro handles image optimization automatically during build
+4. Build generates the static site in `dist/`
 
 ## Template System
 
-Zine uses `.shtml` templates with a custom templating syntax:
-- `layouts/base.shtml`: Main template with navigation and metadata
-- `layouts/post.shtml`: Blog post layout
-- `layouts/page.shtml`: Static page layout
-- `layouts/index.shtml`: Homepage layout
+Astro uses `.astro` components with a familiar HTML-like syntax:
+- `src/layouts/Base.astro`: Main template with navigation and metadata
+- `src/pages/posts/[...slug].astro`: Blog post layout
+- `src/pages/about.astro`: About page layout
+- `src/pages/contact.astro`: Contact page layout
+- `src/pages/subscribe.astro`: Subscribe page layout
+- `src/pages/index.astro`: Homepage layout
 
 ## Build Process
 
-1. `build.ts` processes images, then builds frontend assets (CSS/JS) using Bun
-2. `build.zig` configures Zine with content/layout/asset paths
-3. Zine generates the complete static site in `zig-out/`
-4. Development server (`dev.ts`) watches for changes including image directories and rebuilds automatically
+1. Astro processes content collections and generates type-safe schemas
+2. Images are optimized and converted to modern formats (WebP, AVIF)
+3. React components are rendered server-side and hydrated client-side as needed
+4. Static site is generated in `dist/` directory
+5. RSS feed and sitemap are generated automatically
+
+## Key Features
+
+- **Giscus Comments**: GitHub Discussions-based commenting system
+- **SEO Aliases**: Backwards compatibility redirects for old URLs
+- **RSS Feed**: Automatically generated at `/rss.xml`
+- **Sitemap**: Auto-generated sitemap at `/sitemap-index.xml`
+- **Type Safety**: Full TypeScript support with content collection schemas
+- **Performance**: Optimized images, minimal JavaScript, fast loading
+
+## Environment Variables
+
+```bash
+PUBLIC_GISCUS_REPO=owner/repository
+PUBLIC_GISCUS_REPO_ID=R_kgDOHxxxxx
+PUBLIC_GISCUS_CATEGORY=Comments
+PUBLIC_GISCUS_CATEGORY_ID=DIC_kwDOHxxxxx
+```
+
+Check your current working directory if commands fail.

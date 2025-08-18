@@ -1,0 +1,62 @@
+/* Comments Component Styles */
+.comments-container {
+  margin-top: 3rem;
+  padding-top: 2rem;
+  border-top: 1px solid var(--pico-border-color);
+}
+
+.comments-header {
+  margin-bottom: 1.5rem;
+}
+
+.comments-header h3 {
+  margin: 0 0 0.5rem 0;
+  color: var(--pico-color);
+  font-size: 1.5rem;
+  font-weight: 600;
+}
+
+.comments-header p {
+  margin: 0;
+  color: var(--pico-muted-color);
+  font-size: 0.9rem;
+  line-height: 1.5;
+}
+
+.comments-loading {
+  padding: 2rem;
+  text-align: center;
+  background: var(--pico-background-color);
+  border: 1px solid var(--pico-border-color);
+  border-radius: 0.5rem;
+  color: var(--pico-muted-color);
+}
+
+.giscus-container {
+  /* Ensure Giscus integrates with the theme */
+  border-radius: 0.5rem;
+  overflow: hidden;
+}
+
+/* Enhance Giscus integration with Pico violet theme */
+.giscus-container .giscus-frame {
+  border-radius: 0.5rem;
+}
+
+/* Make sure the container doesn't cause horizontal scroll */
+.comments-container {
+  max-width: 100%;
+  overflow-x: hidden;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .comments-container {
+    margin-top: 2rem;
+    padding-top: 1.5rem;
+  }
+  
+  .comments-header h3 {
+    font-size: 1.25rem;
+  }
+}

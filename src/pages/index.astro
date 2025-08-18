@@ -1,0 +1,92 @@
+---
+import { getCollection } from 'astro:content';
+import Base from '../layouts/Base.astro';
+
+// Get blog posts
+const posts = await getCollection('blog');
+const allPosts = posts
+  .filter((post) => !post.data.draft)
+  .sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf());
+
+const featuredPosts = allPosts.filter(post => post.data.featured);
+---
+
+<Base title="Simon Hartcher" description="Simon Hartcher's Blog - Software Development, Web Development, and Technology">
+  <main id="page">
+    <!-- Page content would go here if this was a content page -->
+  </main>
+  
+  {featuredPosts.length > 0 && (
+    <>
+      <h1>Featured</h1>
+      {featuredPosts.map((post) => (
+        <article class="blog-post__featured">
+          <a href={`/posts/${post.id.replace('.mdx', '')}`}>
+            {post.data.cover && (
+              <picture>
+                <img src={post.data.cover} alt="Cover image" class="cover" />
+              </picture>
+            )}
+          </a>
+          <div class="blog-post__card__content">
+            <a href={`/posts/${post.id.replace('.mdx', '')}`} class="blog-post-card" aria-label={`Read ${post.data.title}`}>
+              <h5>{post.data.title}</h5>
+            </a>
+            {post.data.description && (
+              <p>{post.data.description}</p>
+            )}
+            <aside>
+              <small>
+                Published on
+                <time datetime={post.data.date.toISOString()}>
+                  {post.data.date.toLocaleDateString('en-US', {
+                    day: 'numeric',
+                    month: 'long',
+                    year: 'numeric'
+                  })}
+                </time>
+                by
+                <a href="/about"><strong>{post.data.author}</strong></a>
+              </small>
+            </aside>
+          </div>
+        </article>
+      ))}
+    </>
+  )}
+
+  <h1>Recent Posts</h1>
+  {allPosts.map((post) => (
+    <article class="blog-post__card">
+      <a href={`/posts/${post.id.replace('.mdx', '')}`} class="blog-post__card__cover-thumb__container">
+        <picture>
+          <source srcset={`/posts/${post.id.replace('.mdx', '')}/cover-thumbnail.webp 300w, /posts/${post.id.replace('.mdx', '')}/cover-small.webp 600w`} sizes="50vw" />
+          <img class="blog-post__card__cover-thumb" src={`/posts/${post.id.replace('.mdx', '')}/cover-thumbnail.webp`} alt="Cover image" />
+        </picture>
+      </a>
+      <div class="blog-post__card__content">
+        <a href={`/posts/${post.id.replace('.mdx', '')}`} class="blog-post-card" aria-label={`Read ${post.data.title}`}>
+          <h5>{post.data.title}</h5>
+        </a>
+        {post.data.description && (
+          <p>{post.data.description}</p>
+        )}
+        <aside>
+          <small>
+            Published on
+            <time datetime={post.data.date.toISOString()}>
+              {post.data.date.toLocaleDateString('en-US', {
+                day: 'numeric',
+                month: 'long',
+                year: 'numeric'
+              })}
+            </time>
+            by
+            <a href="/about"><strong>{post.data.author}</strong></a>
+          </small>
+        </aside>
+      </div>
+    </article>
+  ))}
+</Base>
+

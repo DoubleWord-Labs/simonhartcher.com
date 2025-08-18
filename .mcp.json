@@ -1,0 +1,33 @@
+{
+  "mcpServers": {
+    "astro": {
+      "type": "sse",
+      "url": "http://localhost:4321/__mcp/sse"
+    },
+    "cclsp": {
+      "type": "stdio",
+      "command": "bunx",
+      "args": [
+        "-y",
+        "cclsp"
+      ],
+      "env": {
+        "CCLSP_CONFIG_PATH": ".cclsp.json"
+      }
+    },
+    "playwright": {
+      "command": "bunx",
+      "args": [
+        "-y",
+        "@playwright/mcp@latest"
+      ]
+    },
+    "sequential-thinking": {
+      "command": "bunx",
+      "args": [
+        "-y",
+        "@modelcontextprotocol/server-sequential-thinking"
+      ]
+    }
+  }
+}

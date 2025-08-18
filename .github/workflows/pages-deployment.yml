@@ -11,34 +11,36 @@ jobs:
         with:
           lfs: true
 
-      - uses: jdx/mise-action@v2
+      - name: Setup Bun
+        uses: oven-sh/setup-bun@v2
         with:
-          experimental: true # [default: false] enable experimental features
-          install: false
-          log_level: debug # [default: info] log level
+          bun-version: latest
 
-      - name: Install bun
-        run: mise use bun
-
-      - uses: mlugg/setup-zig@v1
+      - name: Cache dependencies
+        uses: actions/cache@v4
         with:
-          version: 0.14.0
+          path: ~/.bun/install/cache
+          key: ${{ runner.os }}-bun-${{ hashFiles('**/bun.lockb') }}
+          restore-keys: |
+            ${{ runner.os }}-bun-
 
-      - name: Zig Action Cache
-        uses: Hanaasagi/zig-action-cache@v1.1.5
-        with:
-          cache-directories: ".zig-cache"
+      - name: Install dependencies
+        run: bun install
 
-      - name: Build
-        run: |
-          bun install
-          bun run build
+      - name: Build Astro site
+        run: bun run build
+        env:
+          NODE_ENV: production
+          PUBLIC_GISCUS_REPO: ${{ vars.PUBLIC_GISCUS_REPO }}
+          PUBLIC_GISCUS_REPO_ID: ${{ vars.PUBLIC_GISCUS_REPO_ID }}
+          PUBLIC_GISCUS_CATEGORY: ${{ vars.PUBLIC_GISCUS_CATEGORY }}
+          PUBLIC_GISCUS_CATEGORY_ID: ${{ vars.PUBLIC_GISCUS_CATEGORY_ID }}
 
-      - name: Publish
+      - name: Publish to Cloudflare Pages
         uses: cloudflare/pages-action@v1
         with:
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
           projectName: simonhartcher-com-1
-          directory: zig-out
+          directory: dist
           gitHubToken: ${{ secrets.GITHUB_TOKEN }}
