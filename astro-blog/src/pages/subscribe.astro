@@ -1,0 +1,55 @@
+---
+import { getEntry, render } from 'astro:content';
+import Base from '../layouts/Base.astro';
+
+const page = await getEntry('pages', 'subscribe');
+if (!page) throw new Error('Subscribe page not found');
+
+const { Content } = await render(page);
+---
+
+<Base 
+  title={page.data.title}
+  description={page.data.description || "Subscribe to Simon Hartcher's blog"}
+>
+  <article class="page">
+    <div class="page-content">
+      <Content />
+    </div>
+  </article>
+</Base>
+
+<style>
+  .page {
+    max-width: 600px;
+    margin: 0 auto;
+  }
+  
+  
+  .page-content {
+    line-height: 1.7;
+  }
+  
+  .page-content :global(.listmonk-form) {
+    background: var(--pico-card-background-color);
+    border: 1px solid var(--pico-border-color);
+    border-radius: 0.5rem;
+    padding: 2rem;
+  }
+  
+  .page-content :global(.listmonk-form h3) {
+    margin-top: 0;
+    margin-bottom: 1.5rem;
+    color: var(--pico-primary);
+  }
+  
+  .page-content :global(.listmonk-form input[type="email"]),
+  .page-content :global(.listmonk-form input[type="text"]) {
+    width: 100%;
+    margin-bottom: 1rem;
+  }
+  
+  .page-content :global(.listmonk-form button) {
+    width: 100%;
+  }
+</style>

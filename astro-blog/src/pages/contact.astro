@@ -1,0 +1,81 @@
+---
+import { getEntry, render } from 'astro:content';
+import { Image } from 'astro:assets';
+import Base from '../layouts/Base.astro';
+
+const page = await getEntry('pages', 'contact');
+if (!page) throw new Error('Contact page not found');
+
+const { Content } = await render(page);
+
+// Dynamic import for cover image
+let coverImage;
+if (page.data.cover) {
+  try {
+    const imagePath = page.data.cover.replace('/', '../assets/');
+    const modules = import.meta.glob('../assets/**/*.{webp,jpg,jpeg,png}', { eager: true });
+    coverImage = modules[imagePath]?.default;
+  } catch (error) {
+    console.error('Failed to load cover image:', error);
+  }
+}
+---
+
+<Base 
+  title={page.data.title}
+  description={page.data.description || "Contact Simon Hartcher"}
+  image={page.data.cover}
+>
+  <article class="page">
+    {coverImage && (
+      <div class="cover-image">
+        <Image src={coverImage} alt="Cover image" class="cover" />
+      </div>
+    )}
+    
+    <div class="page-content">
+      <Content />
+    </div>
+  </article>
+</Base>
+
+<style>
+  .page {
+    /* Use full container width like original */
+  }
+  
+  .cover-image {
+    margin-bottom: 2rem;
+  }
+  
+  .cover-image .cover {
+    width: 100%;
+    height: 300px;
+    object-fit: cover;
+    border-radius: 0.5rem;
+  }
+  
+  
+  .page-content {
+    line-height: 1.7;
+  }
+  
+  .page-content :global(h1),
+  .page-content :global(h2) {
+    margin-top: 2rem;
+    margin-bottom: 1rem;
+  }
+  
+  .page-content :global(h3) {
+    margin-top: 1.5rem;
+    margin-bottom: 0.75rem;
+  }
+  
+  .page-content :global(ul, ol) {
+    margin-bottom: 1rem;
+  }
+  
+  .page-content :global(li) {
+    margin-bottom: 0.5rem;
+  }
+</style>
