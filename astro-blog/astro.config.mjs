@@ -3,12 +3,13 @@ import { defineConfig } from "astro/config";
 import mdx from "@astrojs/mdx";
 import alpinejs from "@astrojs/alpinejs";
 import sitemap from "@astrojs/sitemap";
+import react from "@astrojs/react";
 import mcp from "astro-mcp";
 
 // https://astro.build/config
 export default defineConfig({
     site: "https://simonhartcher.com",
-    integrations: [mdx(), alpinejs(), sitemap(), mcp()],
+    integrations: [mdx(), alpinejs(), react(), sitemap(), mcp()],
     image: {
         remotePatterns: [{ protocol: "https" }],
     },

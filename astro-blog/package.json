@@ -11,10 +11,14 @@
   "dependencies": {
     "@astrojs/alpinejs": "^0.4.8",
     "@astrojs/mdx": "^4.3.3",
+    "@astrojs/react": "^4.3.0",
     "@astrojs/rss": "^4.0.12",
     "@astrojs/sitemap": "^3.4.2",
+    "@giscus/react": "^3.1.0",
     "alpinejs": "^3.14.9",
-    "astro": "^5.12.9"
+    "astro": "^5.12.9",
+    "react": "^19.1.1",
+    "react-dom": "^19.1.1"
   },
   "devDependencies": {
     "astro-mcp": "^0.4.1"

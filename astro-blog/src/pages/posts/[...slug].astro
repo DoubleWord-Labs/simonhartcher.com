@@ -2,6 +2,8 @@
 import { type CollectionEntry, getCollection, render } from 'astro:content';
 import { Image } from 'astro:assets';
 import Base from '../../layouts/Base.astro';
+import Comments from '../../components/Comments.tsx';
+import '../../components/Comments.css';
 
 export async function getStaticPaths() {
   const posts = await getCollection('blog');
@@ -67,6 +69,9 @@ if (post.data.cover) {
     <div class="post-content">
       <Content />
     </div>
+
+    <!-- Comments Section -->
+    <Comments client:visible postTitle={post.data.title} />
   </article>
 </Base>
 
