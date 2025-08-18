@@ -38,7 +38,8 @@
   "enableAllProjectMcpServers": true,
   "enabledMcpjsonServers": [
     "astro",
-    "astro-lsp",
-    "cclsp"
+    "cclsp",
+    "playwright",
+    "sequential-thinking"
   ]
 }

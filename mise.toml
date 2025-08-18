@@ -1,0 +1,22 @@
+[tools]
+bun = "latest"
+
+[tasks.dev]
+run = "bun run dev"
+description = "Start Astro development server"
+
+[tasks.build]
+run = "bun run build"
+description = "Build the Astro site for production"
+
+[tasks.preview]
+run = "bun run preview"
+description = "Preview the production build locally"
+
+[tasks.check]
+run = "astro check"
+description = "Check Astro project for TypeScript errors"
+
+[tasks.sync]
+run = "astro sync"
+description = "Sync Astro content collections"

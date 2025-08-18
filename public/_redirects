@@ -1,3 +1,27 @@
 # Sitemap redirects
 /sitemap.xml /sitemap-index.xml 302
 /index.xml /rss.xml 302
+
+# Blog post redirects (old URL structure to new)
+/migrating-from-styled-components-to-emotion /posts/2021-08-07-migrating-from-styled-components-to-emotion 301
+/3d-look-rotations-in-2d-with-godot-4 /posts/2023-04-23-get-3d-look-rotations-in-2d-with-godot-4 301
+/update-all-hg-repositories-using-powershell /posts/2012-07-05-update-all-hg-repositories-using-powershell 301
+/how-to-cherry-pick-a-git-commit-from-a-fork /posts/2023-06-08-how-to-cherry-pick-a-git-commit-from-a-fork 301
+/image-caching-for-a-wpf-desktop-application /posts/2009-12-12-image-caching-for-a-wpf-desktop-application 301
+/howto-query-mssql-and-send-html-email-using-powershell /posts/2009-09-13-howto-query-mssql-and-send-html-email-using-powershell 301
+/how-to-add-java-script-bundling-to-an-existing-mvc-project /posts/2018-10-15-how-to-add-javascript-bundling-to-an-existing-mvc-project 301
+/polygon-peril-prototype /posts/2024-01-17-polygon-peril-prototype-video-game-available-to-play-now 301
+/university-upending-my-life-and-some-history /posts/2013-11-17-university-upending-my-life-and-some-history 301
+/getting-started-with-meteor-and-react /posts/2015-09-28-getting-started-with-meteor-and-react 301
+/git-delete-merged-deleted-branches /posts/2016-01-29-git-delete-merged-deleted-branches 301
+/react-behavioural-props /posts/2023-06-08-react-behavioural-props 301
+/xbox-media-centre-with-raspberry-pi /posts/2013-09-30-xbox-media-centre-with-raspberry-pi 301
+/serious-sam-hd-kleer-skeleton-surfing /posts/2010-01-27-serious-sam-hd-kleer-skeleton-surfing 301
+
+# Special pages and legacy URLs
+/newsletter /subscribe 302
+/simonhartchercom / 301
+/what-youre-doing-is-not-scrum / 301
+
+# Remove _next image URLs and other invalid paths (return 404 or redirect to home)
+/_next/* / 301
