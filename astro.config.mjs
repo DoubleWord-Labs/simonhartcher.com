@@ -10,6 +10,13 @@ import mcp from "astro-mcp";
 export default defineConfig({
     site: "https://simonhartcher.com",
     integrations: [mdx(), alpinejs(), react(), sitemap(), mcp()],
+    markdown: {
+        shikiConfig: {
+            theme: 'github-dark-dimmed',
+            langs: ['javascript', 'typescript', 'jsx', 'tsx', 'css', 'html', 'astro', 'markdown', 'bash', 'json', 'yaml', 'python', 'rust', 'go', 'sql'],
+            wrap: true,
+        },
+    },
     image: {
         remotePatterns: [{ protocol: "https" }],
     },

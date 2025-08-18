@@ -16,7 +16,7 @@ WPF is a great technology and in my opinion is miles better than WinForms. Unfor
 Consider the following code where the binding _ImageAddress_ points to an image on some web server (www.someserver.com/image.jpg):
 
 
-```javascript
+```xml
 <Image Source="{Binding ImageAddress}"/>
 ```
 
@@ -94,8 +94,8 @@ class ImageCacher : IValueConverter
 Let us define where our images will be saved.
 
 
-```
-static private readonly string AppDataDirectory = String.Format(“{0}/ImageCacher/”, Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData));
+```csharp
+static private readonly string AppDataDirectory = String.Format("{0}/ImageCacher/", Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData));
 ```
 
 
@@ -190,8 +190,8 @@ Then in XAML, reference our converter using an xmlns tag and add our converter i
 Then we add the Converter attribute to the Binding of our original Image control.
 
 
-```csharp
-<Image Source=”{Binding ImageAddress, Converter={StaticResource imageCacher}}“/>
+```xml
+<Image Source="{Binding ImageAddress, Converter={StaticResource imageCacher}}"/>
 ```
 
 
