@@ -1,30 +1,26 @@
 {
+  "name": "astro-blog",
+  "type": "module",
+  "version": "0.0.1",
   "scripts": {
-    "process-images": "bun src/scripts/processImages.ts",
-    "prebuild": "bun build.ts",
-    "build": "zig build",
-    "dev": "bun dev.ts",
-    "predev": "npx rimraf zig-out"
+    "dev": "astro dev",
+    "build": "astro build",
+    "preview": "astro preview",
+    "astro": "astro"
   },
   "dependencies": {
-    "alpinejs": "^3.14.8",
-    "moment": "^2.30.1",
-    "ramda": "^0.30.1",
-    "sharp": "^0.33.5"
+    "@astrojs/alpinejs": "^0.4.8",
+    "@astrojs/mdx": "^4.3.3",
+    "@astrojs/react": "^4.3.0",
+    "@astrojs/rss": "^4.0.12",
+    "@astrojs/sitemap": "^3.4.2",
+    "@giscus/react": "^3.1.0",
+    "alpinejs": "^3.14.9",
+    "astro": "^5.12.9",
+    "react": "^19.1.1",
+    "react-dom": "^19.1.1"
   },
   "devDependencies": {
-    "@types/alpinejs": "^3.13.11",
-    "@types/bun": "latest",
-    "@types/node-static": "^0.7.11",
-    "@types/ramda": "^0.30.2",
-    "astro-mcp": "^0.4.1",
-    "node-static": "^0.7.11"
-  },
-  "name": "simonhartcher.com",
-  "module": "src/index.ts",
-  "type": "module",
-  "private": true,
-  "peerDependencies": {
-    "typescript": "^5"
+    "astro-mcp": "^0.4.1"
   }
 }
