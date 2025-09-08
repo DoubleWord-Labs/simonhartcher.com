@@ -1,16 +1,16 @@
-import { defineCollection, z } from 'astro:content';
+import { defineCollection, z, reference } from 'astro:content';
 import { glob } from 'astro/loaders';
 
 const blog = defineCollection({
-  loader: glob({ pattern: '**/*.mdx', base: './src/content/blog' }),
-  schema: z.object({
+  loader: glob({ pattern: ['**/*.mdx', '**/index.mdx'], base: './src/content/blog' }),
+  schema: ({ image }) => z.object({
     title: z.string(),
     description: z.string(),
     date: z.coerce.date(),
     author: z.string().default('Simon Hartcher'),
     tags: z.array(z.string()).default([]),
-    cover: z.string().optional(),
-    preview: z.string().optional(),
+    cover: z.union([z.string(), image()]).optional(),
+    preview: z.union([z.string(), image()]).optional(),
     featured: z.boolean().default(false),
     draft: z.boolean().default(false),
   }),
