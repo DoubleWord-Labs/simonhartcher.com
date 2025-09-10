@@ -1,0 +1,193 @@
+---
+title: "Announcing compile_flagz: Better editor integration for your C/C++ projects using build.zig"
+description: "A Zig package that generates compile_flags.txt files to provide proper editor integration for C/C++ projects using build.zig, ensuring your IDE can find include paths and provide code intelligence."
+date: 2025-09-10T00:00:00.000Z
+author: "Simon Hartcher"
+tags: ["Zig", "C", "C++", "Open Source", "Developer Tools", "Build Systems"]
+featured: true
+draft: false
+---
+
+import { Image } from "astro:assets";
+import cover from "./images/2025-09-08-announcing-compile-flagz/cover.jpg";
+
+export {
+    cover,
+};
+
+When using Zig's build system for C/C++ projects, editors struggle to find include paths and provide proper code intelligence. [compile_flagz](https://github.com/deevus/compile_flagz) solves this by automatically generating `compile_flags.txt` from your `build.zig` configuration.
+
+## The Problem
+
+Recently I've been working on [ROLLER](https://github.com/FatalDecomp/ROLLER), a decompilation project for the 1995 game, Fatal Racing (or Whiplash in NA). [The game](https://en.wikipedia.org/wiki/Fatal_Racing) (known internally as Roller), is an early 3D game written in C with a bespoke engine. It also happens to be one of my favourite games from the 90s. I remember playing it a whole lot as a teenager with my best friend after we found it on a [WAREZ](https://en.wikipedia.org/wiki/Warez) CD. I've since fixed the error of my ways and secured a physical copy a few years ago. You can read more about it [here](/posts/2025-03-27-adventures-in-game-development).
+
+<Image src={import(`images/2025-09-08-announcing-compile-flagz/whiplash.jpg`)} alt="Image of Fatal Racing/Whiplash" />
+
+Zig provides a powerful build system, and it ships a C/C++ compiler using LLVM. It can make cross-compilation of projects a breeze, allowing you to build for just about any target you want. (Note: unfortunately it's [not currently possible](https://github.com/castholm/SDL?tab=readme-ov-file#macos) to cross-compile SDL from Linux to MacOS.)
+
+However when working with said C/C++ code with Zig as your build system, your editor (or IDE) won't be able to find the necessary include paths or libraries to make the developer experience seamless.
+
+Your editor needs some way to determine where your includes live so that it can provide rich code completion and error highlighting. Consider the following code from ROLLER:
+
+```c
+// File: roller.c
+// Without include paths, your editor won't know where to find the SDL_image header file.
+#include <SDL3_image/SDL_image.h>
+
+// ...
+
+int InitSDL()
+{
+    // ...
+    s_pWindowTexture = SDL_CreateTexture(s_pRenderer, SDL_PIXELFORMAT_RGB24, SDL_TEXTUREACCESS_STREAMING, 640, 400);
+    SDL_SetTextureScaleMode(s_pWindowTexture, SDL_SCALEMODE_NEAREST);
+    s_pDebugTexture = SDL_CreateTexture(s_pRenderer, SDL_PIXELFORMAT_RGB24, SDL_TEXTUREACCESS_STREAMING, 64, 64);
+    SDL_SetTextureScaleMode(s_pDebugTexture, SDL_SCALEMODE_NEAREST);
+    s_pRGBBuffer = malloc(640 * 400 * 3);
+    s_pDebugBuffer = malloc(64 * 64 * 3);
+
+    // This will build fine, but the editor doesn't know what this is
+    SDL_Surface *pIcon = IMG_Load("roller.ico");
+    SDL_SetWindowIcon(s_pWindow, pIcon);
+    // ...
+}
+```
+
+In most cases the `SDL_image` header will not be found and you get red squiggles.
+
+
+<Image src={import(`images/2025-09-08-announcing-compile-flagz/zed_error_1.png`)} alt="Screenshot showing SDL_image header not found error in Zed editor" />
+
+<Image src={import(`images/2025-09-08-announcing-compile-flagz/zed_error_2.png`)} alt="Screenshot showing undefined SDL functions highlighted as errors in Zed" />
+
+When programming, there is nothing worse than trying to work with a codebase when you can't navigate to the source code or get basic auto-complete for a library.
+
+## Enter compile_flagz
+
+My package [compile_flagz](https://github.com/deevus/compile_flagz) aims to solve this problem by generating a [compile commands file](https://clangd.llvm.org/design/compile-commands). In this case: `compile_flags.txt`. This file is a standard format that language servers like clangd use to understand your project's compilation settings. For ROLLER it looks like this:
+
+```shell
+-I/home/sh/.cache/zig/p/sdl-0.3.0+3.2.22-7uIn9Pg3fwGG2IyIOPxxOSVe-75nUng9clt7tXGFLzMr/include
+-I/home/sh/.cache/zig/p/N-V-__8AAJB7IgJ65BPSqjqzt7j-5xKDklR0h8c11T60iemj/include
+-I/home/sh/.cache/zig/p/wildmidi-0.4.6-fQncf6jFDgCtSOKbYs0wEaUZ4n1vMUKaU3OWGXfQD9cL/include
+```
+
+These are the Zig cache paths for SDL, SDL_image, and Wildmidi respectively.
+
+### How It Works
+
+After adding it as a dependency to your project:
+
+```shell
+zig fetch --save git+https://github.com/deevus/compile_flagz
+```
+
+At a high level, the process is as follows:
+
+1. Import `compile_flagz` directly into your `build.zig` file. (Note: not using `b.dependency`)
+2. Create a `CompileFlags` instance by calling `compile_flags.addCompileFlags(b)`.
+3. Add your include paths using `CompileFlags.addIncludePath`.
+4. Create a `compile-flags` step so that you can generate `compile_flags.txt` on demand.
+5. (Optional) Make your top level build step depend on the compile flags step.
+6. When the `compile-flags` step is run, it will generate `compile_flags.txt` in the root of your project.
+
+## Real-World Example
+
+Our setup for it in `build.zig` looks like this:
+
+```zig
+fn configureDependencies(b: *Build, exe: *Compile, target: ResolvedTarget, optimize: OptimizeMode) void {
+    const exe_mod = exe.root_module;
+
+    // build dependencies
+    const wildmidi = b.dependency("wildmidi", .{
+        .target = target,
+        .optimize = optimize,
+    });
+    const wildmidi_lib = wildmidi.artifact("wildmidi");
+
+    const sdl_image = b.dependency("SDL_image", .{
+        .target = target,
+        .optimize = optimize,
+    });
+    const sdl_image_lib = sdl_image.artifact("SDL3_image");
+
+    const sdl = b.dependency("sdl", .{
+        .target = target,
+        .optimize = optimize,
+        .lto = .none,
+    });
+    const sdl_lib = sdl.artifact("SDL3");
+
+    exe_mod.linkLibrary(sdl_lib);
+    exe_mod.linkLibrary(sdl_image_lib);
+    exe_mod.linkLibrary(wildmidi_lib);
+
+    const sdl_image_source = sdl_image.builder.dependency("SDL_image", .{
+        .lto = .none,
+    });
+
+    var cflags = compile_flagz.addCompileFlags(b);
+    cflags.addIncludePath(sdl.builder.path("include"));
+    cflags.addIncludePath(sdl_image_source.builder.path("include"));
+    cflags.addIncludePath(wildmidi.builder.path("include"));
+
+    const cflags_step = b.step("compile-flags", "Generate compile flags");
+    cflags_step.dependOn(&cflags.step);
+}
+
+const compile_flagz = @import("compile_flagz");
+```
+
+The result is that your editor can now resolve your project's dependencies.
+
+<Image src={import(`images/2025-09-08-announcing-compile-flagz/no_more_squiggles.png`)} alt="Screenshot showing resolved includes with no errors in Zed editor" />
+
+## Quick Start
+
+Here's the minimal code you need to get started:
+
+```zig
+// In your build.zig
+const compile_flagz = @import("compile_flagz");
+
+pub fn build(b: *std.Build) void {
+    // Your existing build setup...
+
+    // Add compile_flagz
+    var cflags = compile_flagz.addCompileFlags(b);
+    cflags.addIncludePath(your_dependency.path("include"));
+
+    // Create the step
+    const cflags_step = b.step("compile-flags", "Generate compile flags");
+    cflags_step.dependOn(&cflags.step);
+}
+```
+
+Then run `zig build compile-flags` to generate your `compile_flags.txt`.
+
+## Future Plans
+
+The [clang compile commands design page](https://clangd.llvm.org/design/compile-commands) says the following:
+
+> The most critical flags in practice are:
+>
+>   - Setting the `#include` search path: `-I`, `-isystem`, and others.
+>   - Controlling the language variant used: `-x`, `-std` etc
+>   - Predefining preprocessor macros, `-D` and friends
+>
+> Without these flags, clangd will often spectacularly fail to parse source code, generating many spurious errors (e.g. `#included` files not being found).
+
+So far `compile_flagz` only implements the `-I` case. If you need additional features, please open an issue or raise a pull request: https://github.com/deevus/compile_flagz
+
+## Conclusion
+
+If you are considering using Zig as your build system for your C or C++ project (and you should!), consider adding `compile_flagz` to your project. It may greatly improve your development experience.
+
+Give it a try on your next C/C++ project using Zig build, and let me know how it goes. If you find it useful, please star the repository!
+
+---
+
+**Links:**
+- [GitHub Repository](https://github.com/deevus/compile_flagz)
+- [ROLLER](https://github.com/FatalDecomp/ROLLER)
