@@ -1,5 +1,5 @@
 ---
-title: Best times to post on Hacker News according to Claude
+title: Best times to share to Hacker News according to Claude
 description: An analysis of optimal posting times on Hacker News based on Claude's insights into engagement patterns and user behavior
 date: 2025-09-10
 author: "Simon Hartcher"
@@ -13,4 +13,64 @@ import cover from './2025-09-10-best-times-to-post-on-hacker-news-according-to-c
 
 export { cover };
 
-<Image src={import('2025-09-10-best-times-to-post-on-hacker-news-according-to-claude/assets/hn-global-posting-strategy-preview.png')} alt="Hacker News Global Posting Strategy Preview" />
+## Introduction
+
+While writing [Automate compile_flags for C/C++ projects on the Zig build system](/posts/2025-09-08-announcing-compile-flagz) I decided (I like to think it's not just dopamine seeking behaviour) to research the best times to share posts to [Hacker News](https://news.ycombinator.com). An additional challenge for those of us [living down-under](https://www.bigw.com.au/product/the-simpsons-bart-vs-australia-replica-flag/p/9900061717) is the timezone difference to the US west coast, where the majority of active users reside. My aforementioned post saw some moderate success, getting to the second page, topping out at number 35.
+
+I recently subscribed to Claude Max to use it for my consulting business. After reading [the other Simon's 😜](https://simonwillison.net) post [about the "Code Interpreter"](https://simonwillison.net/2025/Sep/9/claude-code-interpreter/), I was keen to give it a try myself.
+
+So I thought why not use my tokens to leverage the [research Claude did](https://claude.ai/public/artifacts/18c0800c-5269-4d51-a91f-89bb5295b290) to create a tool that can help you determine the best time to post on Hacker News, guaranteed (not really)!
+
+## Tldr
+
+Can't wait? Press/click the image below to start playing with the tool:
+
+[![Hacker News Global Posting Strategy Preview](./2025-09-10-best-times-to-post-on-hacker-news-according-to-claude/assets/hn-global-posting-strategy-preview.png)](/tools/hacker-news-global-posting-strategy-tool.html)
+
+## The Hacker News Global Posting Strategy Tool
+
+### How it works
+
+I pushed Claude on this and got the following response:
+
+> You're right to push on this - I should be transparent. **I don't actually know how these specific static values were determined** because I created them as representative examples based on the patterns described in the research, not from a specific dataset or calculation.
+
+To quote [Drew Carey](https://en.wikipedia.org/wiki/Drew_Carey):
+
+> Welcome to "Whose Line Is It Anyway?". The show where everything's made up and the points don't matter.
+
+### How to use
+
+It will try to determine your timezone based on your browser settings. If it fails, you can manually select your timezone from the dropdown. At the bottom, you can select an exact UTC+offset (apologies to the 0.5h offset gang).
+
+You will be presented the following charts that are specific to your selected timezone:
+
+- Success Rate Heatmap: shows the success rate of posting at different times of day. Green good. Red bad. The "optimal time" is highlighted for you with a border and a trophy emoji 🏆.
+- Top 10 Posting Opportunities: uses the success rate to determine the top 10 best times to post.
+- Expected Traffic: a line graph that shows the expected traffic if your post hits the front page for a particular day. Higher is better.
+- Competition Level by Day: a radar chart that shows the level of competition (other posts) on Hacker News. Smaller is better.
+- Engagement Patterns: a line graph showing average Hacker News activity level for each hour of your local day. Select a day to see the engagement patterns for that day of the week.
+
+## The process
+
+Unfortunately Anthropic doesn't allow sharing of "Chats using advanced research", but I can show you a screenshot of it along with the [resulting artifact that I shared earlier](https://claude.ai/public/artifacts/18c0800c-5269-4d51-a91f-89bb5295b290) (note that it has an Australian skew):
+
+![Claude's research](2025-09-10-best-times-to-post-on-hacker-news-according-to-claude/assets/hacker_news_posting_strategies.png)
+
+I had a bit of back and forth with Claude to get the output working properly. Initially it hard-coded and duplicated the data for each timezone (initially just PST and AEST). Then it would work on my phone but not on my desktop browser. This was due to event handling apparently. To be honest, I vibed the whole thing. I then figured that it would be cool to be able to inspect the data from the point of view of every timezone (within reason). After a few more prompts I got it to where I was happy with it.
+
+## Optimal Posting Times
+
+For me the recommendation is to post on Sunday night at 11PM during winter, and 7PM during summer. Why there is such a big difference, I'm not sure. I suppose it figures that I won't be up until midnight on a Sunday, which is fair. Looking at the heatmap though, neither of these options are the best-in-class times to post. The best times are in the middle of the night for me, being between 1AM and 6AM in Australian Eastern Daylight Time (AEDT, UTC+11 during summer months). My plan is to share this post on Sunday at 6PM, which is presented as a "strong alternative window" for Australian Eastern Standard Time (AEST, UTC+10 during winter months).
+
+![AEST Optimal Posting Strategy](2025-09-10-best-times-to-post-on-hacker-news-according-to-claude/assets/aest_posting_strategy.png)
+
+## Can we trust it?
+
+🤷‍♂️ I dunno man. Probably not. I've found Claude's advanced research to be pretty reliable, especially in extended thinking mode. However that has been for thoughts rather than data analysis. Maybe it's completely wrong. I'll soon find out when I share this post on HN.
+
+---
+
+**Links:**
+- [Hacker News Global Posting Strategy Tool](/tools/hacker-news-global-posting-strategy-tool.html)
+- [Claude Research Artifact](https://claude.ai/public/artifacts/18c0800c-5269-4d51-a91f-89bb5295b290)
