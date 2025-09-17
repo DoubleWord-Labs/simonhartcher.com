@@ -1,6 +1,7 @@
 ---
 import "../pico.violet.css";
 import "../styles.css";
+import NavBar from '@components/NavBar.astro';
 
 export interface Props {
     title: string;
@@ -88,45 +89,9 @@ const fullTitle = title ? `${title} | ${siteTitle}` : siteTitle;
                     </article>
                 </dialog>
             </form>
-            <nav class="nav__horizontal">
-                <ul>
-                    <li id="nav-title">
-                        <a href="/"><strong>{siteTitle}</strong></a>
-                    </li>
-                </ul>
-                <ul>
-                    <li><a href="/">Home</a></li>
-                    <li><a href="/about">About</a></li>
-                    <li><a href="/contact">Contact</a></li>
-                    <li>
-                        <a
-                            href="/subscribe"
-                            @click="open = true"
-                            onclick="return false">Subscribe</a
-                        >
-                    </li>
-                </ul>
-            </nav>
+            <NavBar class="nav__horizontal" siteTitle={siteTitle} />
             <aside class="nav__vertical">
-                <nav>
-                    <ul>
-                        <li id="nav-title">
-                            <a href="/"><strong>{siteTitle}</strong></a>
-                        </li>
-                    </ul>
-                    <ul>
-                        <li><a href="/">Home</a></li>
-                        <li><a href="/about">About</a></li>
-                        <li><a href="/contact">Contact</a></li>
-                        <li>
-                            <a
-                                href="/subscribe"
-                                @click="open = true"
-                                onclick="return false">Subscribe</a
-                            >
-                        </li>
-                    </ul>
-                </nav>
+                <NavBar class="nav__vertical" siteTitle={siteTitle} />
             </aside>
         </div>
         <main id="content" class="container">
