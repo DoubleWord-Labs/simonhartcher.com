@@ -94,7 +94,7 @@ const fullTitle = title ? `${title} | ${siteTitle}` : siteTitle;
                 </dialog>
             </form>
             <NavBar class="nav__horizontal" siteTitle={siteTitle} />
-            <aside class="nav__vertical">
+            <aside class="nav__vertical" x-data="{ mobileMenuOpen: false }">
                 <NavBar class="nav__vertical" siteTitle={siteTitle} />
             </aside>
         </div>

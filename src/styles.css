@@ -70,6 +70,46 @@ article p:last-child {
     display: none;
 }
 
+/* Mobile menu toggle button */
+.mobile-nav-header {
+    margin-bottom: 0;
+}
+
+.mobile-menu-toggle {
+    display: flex;
+    align-items: center;
+    gap: 0.375rem;
+    background: transparent;
+    border: 1px solid var(--pico-muted-border-color);
+    padding: 0.375rem 0.75rem;
+    border-radius: var(--pico-border-radius);
+    cursor: pointer;
+    color: var(--pico-color);
+    width: 100%;
+    justify-content: center;
+    transition: background-color 0.2s ease;
+    font-size: 0.9rem;
+}
+
+.mobile-menu-toggle:hover {
+    background: var(--pico-secondary-background);
+}
+
+.mobile-menu-toggle svg {
+    width: 1rem;
+    height: 1rem;
+}
+
+/* Mobile navigation content */
+.mobile-nav-content {
+    overflow: hidden;
+    transition: max-height 0.3s ease, opacity 0.3s ease;
+}
+
+.mobile-nav-content[style*="display: none"] {
+    max-height: 0 !important;
+}
+
 @media (min-width: 620px) {
     .nav__horizontal {
         display: flex;
