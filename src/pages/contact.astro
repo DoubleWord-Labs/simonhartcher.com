@@ -21,7 +21,7 @@ if (page.data.cover) {
 }
 ---
 
-<Base 
+<Base
   title={page.data.title}
   description={page.data.description || "Contact Simon Hartcher"}
   image={page.data.cover}
@@ -29,10 +29,10 @@ if (page.data.cover) {
   <article class="page">
     {coverImage && (
       <div class="cover-image">
-        <Image src={coverImage} alt="Cover image" class="cover" />
+        <Image src={coverImage} alt="Cover image" class="cover" priority />
       </div>
     )}
-    
+
     <div class="page-content">
       <Content />
     </div>
@@ -43,38 +43,38 @@ if (page.data.cover) {
   .page {
     /* Use full container width like original */
   }
-  
+
   .cover-image {
     margin-bottom: 2rem;
   }
-  
+
   .cover-image .cover {
     width: 100%;
     height: 300px;
     object-fit: cover;
     border-radius: 0.5rem;
   }
-  
-  
+
+
   .page-content {
     line-height: 1.7;
   }
-  
+
   .page-content :global(h1),
   .page-content :global(h2) {
     margin-top: 2rem;
     margin-bottom: 1rem;
   }
-  
+
   .page-content :global(h3) {
     margin-top: 1.5rem;
     margin-bottom: 0.75rem;
   }
-  
+
   .page-content :global(ul, ol) {
     margin-bottom: 1rem;
   }
-  
+
   .page-content :global(li) {
     margin-bottom: 0.5rem;
   }
