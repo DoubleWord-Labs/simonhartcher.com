@@ -16,6 +16,7 @@ const allPosts = posts
     .sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf());
 
 const featuredPosts = allPosts.filter((post) => post.data.featured);
+const recentPosts = allPosts.filter((post) => !post.data.featured);
 ---
 
 <Base
@@ -87,7 +88,7 @@ const featuredPosts = allPosts.filter((post) => post.data.featured);
 
     <h1>Recent Posts</h1>
     {
-        allPosts.map((post) => {
+        recentPosts.map((post) => {
             const imagePaths = getResponsiveImagePaths(post);
             return (
                 <article class="blog-post__card">
