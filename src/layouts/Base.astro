@@ -3,6 +3,8 @@ import "../pico.violet.css";
 import "../styles.css";
 import NavBar from '@components/NavBar.astro';
 import PostHog from '@components/posthog.astro';
+import Turnstile from '@components/CloudFlareTurnstile.astro';
+import TurnstileWidget from '@components/TurnstileWidget.astro';
 
 export interface Props {
     title: string;
@@ -41,6 +43,7 @@ const fullTitle = title ? `${title} | ${siteTitle}` : siteTitle;
         />
         <script defer src="/main.min.js"></script>
         <PostHog />
+        <Turnstile />
     </head>
     <body>
         <div x-data="{ open: false }">
@@ -84,9 +87,8 @@ const fullTitle = title ? `${title} | ${siteTitle}` : siteTitle;
                             value="261b8248-9c4e-4ab5-a843-d95fab76fee3"
                         />
                         <footer>
-                            <button type="submit" style="margin-bottom: 0"
-                                >Subscribe</button
-                            >
+                            <TurnstileWidget />
+                            <button type="submit" style="margin-bottom: 0">Subscribe</button>
                         </footer>
                     </article>
                 </dialog>
