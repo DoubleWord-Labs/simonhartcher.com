@@ -28,7 +28,7 @@ const coverImage = getPostCoverImage(post);
 <Base
     title={post.data.title}
     description={post.data.description}
-    image={getCoverImageUrl(post.data.cover)}
+    image={coverImage.src}
 >
     <article class="blog-post">
         {

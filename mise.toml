@@ -2,7 +2,7 @@
 bun = "latest"
 
 [tasks.dev]
-run = "bun run dev"
+run = "bun run dev -- --host 0.0.0.0 --allowed-hosts"
 description = "Start Astro development server"
 
 [tasks.build]
