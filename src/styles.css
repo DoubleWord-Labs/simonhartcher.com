@@ -70,7 +70,7 @@ article p:last-child {
     display: none;
 }
 
-@media (min-width: 576px) {
+@media (min-width: 620px) {
     .nav__horizontal {
         display: flex;
     }
@@ -193,4 +193,41 @@ ol {
 .post-content img.inline {
     display: inline;
     margin: 0;
+}
+
+/* GitHub icon in navbar */
+#nav-title {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+/* Right-align GitHub icon in vertical nav mode only */
+.nav__vertical #nav-title {
+    justify-content: flex-start;
+}
+
+.nav__vertical #nav-title .github-link {
+    margin-left: auto;
+}
+
+.github-link {
+    display: inline-flex !important;
+    align-items: center;
+    justify-content: center;
+    padding: 0 !important;
+    margin-left: 0.5rem;
+    line-height: 0;
+    color: var(--pico-muted-color);
+    transition: color 0.2s ease;
+}
+
+.github-link:hover {
+    color: var(--pico-color) !important;
+}
+
+.github-link svg {
+    width: 1.2em;
+    height: 1.2em;
+    display: block;
 }
