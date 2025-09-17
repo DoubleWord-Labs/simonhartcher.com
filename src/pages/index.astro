@@ -37,13 +37,12 @@ const featuredPosts = allPosts.filter((post) => post.data.featured);
                         <article class="blog-post__featured">
                             <a href={getPostUrl(post)}>
                                 {coverImage && (
-                                    <picture>
-                                        <img
-                                            src={coverImage.src}
-                                            alt="Cover image"
-                                            class="cover"
-                                        />
-                                    </picture>
+                                    <Image
+                                        src={coverImage}
+                                        alt="Cover image"
+                                        class="cover"
+                                        priority
+                                    />
                                 )}
                             </a>
                             <div class="blog-post__card__content">
