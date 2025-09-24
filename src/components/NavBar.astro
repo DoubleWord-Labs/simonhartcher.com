@@ -1,5 +1,7 @@
 ---
+import { Image } from 'astro:assets';
 import GitHubIcon from './GitHubIcon.astro';
+import RssIcon from './RssIcon.astro';
 
 export interface Props {
   siteTitle: string;
@@ -11,7 +13,6 @@ export interface Props {
     <ul>
         <li id="nav-title">
             <a href="/"><strong>{Astro.props.siteTitle}</strong></a>
-            <GitHubIcon href="https://github.com/deevus" />
         </li>
     </ul>
     {Astro.props.class?.includes('nav__vertical') ? (
@@ -64,6 +65,10 @@ export interface Props {
                     @click="open = true"
                     onclick="return false">Subscribe</a
                 >
+            </li>
+            <li>
+                <GitHubIcon href="https://github.com/deevus" />
+                <RssIcon href="/rss.xml" />
             </li>
         </ul>
     )}

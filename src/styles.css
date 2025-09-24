@@ -103,7 +103,9 @@ article p:last-child {
 /* Mobile navigation content */
 .mobile-nav-content {
     overflow: hidden;
-    transition: max-height 0.3s ease, opacity 0.3s ease;
+    transition:
+        max-height 0.3s ease,
+        opacity 0.3s ease;
 }
 
 .mobile-nav-content[style*="display: none"] {
@@ -252,22 +254,25 @@ ol {
 }
 
 .github-link {
-    display: inline-flex !important;
-    align-items: center;
-    justify-content: center;
-    padding: 0 !important;
-    margin-left: 0.5rem;
-    line-height: 0;
-    color: var(--pico-muted-color);
-    transition: color 0.2s ease;
+    text-decoration: none;
 }
 
-.github-link:hover {
-    color: var(--pico-color) !important;
+.github-link img {
+    height: 24px;
+    width: 24px;
 }
 
-.github-link svg {
-    width: 1.2em;
-    height: 1.2em;
-    display: block;
+.github-logo-light-mode {
+    display: inline;
+}
+.github-logo-dark-mode {
+    display: none;
+}
+@media (prefers-color-scheme: dark) {
+    .github-logo-light-mode {
+        display: none;
+    }
+    .github-logo-dark-mode {
+        display: inline;
+    }
 }

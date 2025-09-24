@@ -18,10 +18,12 @@
     "@giscus/react": "^3.1.0",
     "alpinejs": "^3.14.9",
     "astro": "5.13.7",
+    "classnames": "^2.5.1",
     "react": "^19.1.1",
     "react-dom": "^19.1.1"
   },
   "devDependencies": {
+    "@types/classnames": "^2.3.4",
     "astro-mcp": "^0.4.1"
   }
 }
