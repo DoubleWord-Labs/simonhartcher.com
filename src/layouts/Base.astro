@@ -16,10 +16,6 @@ const siteTitle = "Simon Hartcher";
 const fullTitle = title ? `${title} | ${siteTitle}` : siteTitle;
 ---
 
-<script>
-    import("altcha");
-</script>
-
 <html lang="en">
     <head>
         <meta charset="utf-8" />
@@ -92,6 +88,12 @@ const fullTitle = title ? `${title} | ${siteTitle}` : siteTitle;
                             <altcha-widget
                                 challengeurl="https://listmonk.simonhartcher.com/api/captcha/altcha"
                             ></altcha-widget>
+                            <script
+                                is:inline
+                                type="module"
+                                src="https://listmonk.simonhartcher.com/public/static/altcha.umd.js"
+                                async
+                                defer></script>
 
                             <button
                                 type="submit"
