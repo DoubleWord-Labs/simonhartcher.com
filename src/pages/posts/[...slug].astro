@@ -30,8 +30,8 @@ const postUrl = `/posts/${postSlug}`;
 <Base
     title={post.data.title}
     description={post.data.description}
-    image={coverImage.src}
     url={postUrl}
+    ogSlug={postSlug}
 >
     <article class="blog-post">
         <div class="cover-image">

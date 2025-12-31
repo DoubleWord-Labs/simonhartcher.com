@@ -11,14 +11,21 @@ export interface Props {
     description?: string;
     image?: string;
     url?: string;
+    ogSlug?: string; // Slug for generating dynamic OG image
 }
 
-const { title, description = "Simon Hartcher's Blog", image, url } = Astro.props;
+const { title, description = "Simon Hartcher's Blog", image, url, ogSlug } = Astro.props;
 const siteTitle = "Simon Hartcher";
 const fullTitle = title ? `${title} | ${siteTitle}` : siteTitle;
 const siteUrl = "https://simonhartcher.com";
 const canonicalUrl = url ? `${siteUrl}${url}` : siteUrl;
-const ogImage = image ? (image.startsWith('http') ? image : `${siteUrl}${image}`) : undefined;
+
+// Use dynamic OG image if ogSlug is provided, otherwise fall back to provided image
+const ogImage = ogSlug
+    ? `${siteUrl}/og/${ogSlug}.png`
+    : image
+        ? (image.startsWith('http') ? image : `${siteUrl}${image}`)
+        : undefined;
 ---
 
 <script>
