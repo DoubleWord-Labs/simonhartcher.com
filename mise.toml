@@ -1,5 +1,6 @@
 [tools]
 bun = "latest"
+"github:tod-org/tod" = "latest"
 
 [tasks.dev]
 run = "bun run dev -- --host 0.0.0.0 --allowed-hosts"

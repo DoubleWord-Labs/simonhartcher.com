@@ -1,0 +1,70 @@
+---
+title: "Give your agentic processes a name"
+description: "Combining tools and skills with a custom name yields great results"
+date: 2025-12-31
+author: "Simon Hartcher"
+tags: ["ai", "llms", "claude-code"]
+featured: true
+draft: false
+---
+
+import cover from './2025-12-31-give-your-agentic-processes-a-name.avif';
+import InfoBox from '../../components/InfoBox.astro';
+export { cover };
+
+I am often devising agentic processes that I use regularly in Claude Code. Something that I have come up against when working with <em data-tooltip="Large Language Models">LLMs</em> is that they frequently ignore (or forget) your `CLAUDE.md`/`AGENTS.md` instructions. 
+
+A useful pattern that I have been using to keep Claude on task is to **give your process a name**. I think this works because giving the agent a named process is like getting it to call a function. The agent is doing a dance, and that dance is the Samba. There is no ambiguity. The auto-complete engine of the LLM more reliably sticks to the moves of the dance. 
+
+Here are two examples that have worked well for me.
+
+<InfoBox title="❗Note">
+It doesn't escape me that [Claude Skills](https://code.claude.com/docs/en/skills) is another way to do this. Skills are very similar in that they give processes a name, and I am using Skills in my own named processes as you will see below.
+
+In fact, I think if your named processes are getting quite long, you may want to turn them into Skills.
+</InfoBox>
+
+## Example 1: Test-Driven Pair Programming
+
+Often I don't like to let an AI do all the work. For example:
+
+1. The project is written in a programming language that I love working with. In this case, I want to write the code myself.
+2. The task is something complex that I don't trust an agent to do correctly, such as cryptography. 
+
+For this process, I lean heavily on Obra's Superpowers. I tell everyone using Claude Code to try it out!
+
+<InfoBox>
+💡 **[Superpowers](https://github.com/obra/superpowers)** is a software development workflow for agents. It helps you deliver higher quality [vibe engineering](https://simonwillison.net/2025/Oct/7/vibe-engineering/). One of the most mind-bending skills is the brainstorming skill, which uses the Socratic method to question your assumptions and tease out problems and solutions. 
+</InfoBox>
+
+One of its skills is [**Test Driven Development**](https://github.com/obra/superpowers/blob/main/skills/test-driven-development/SKILL.md) (or TDD) which I have used extensively. It employs [Red-Green-Refactor](https://martinfowler.com/bliki/TestDrivenDevelopment.html). You write failing tests first that expect the functionality you want to implement. However, if I want to take the wheel, I use what I coined "Test-Driven Pair Programming". The only change that I made with TDPP is the following instruction inside my user level CLAUDE.md file:
+
+> When asked to do test-driven pair programming (or TDPP), use the test driven development skill. You will handle the RED phase. The user will handle the GREEN-REFACTOR phases. Stop after every RED phase for the user to implement the GREEN phase. Use the code review skill when the GREEN or REFACTOR phases are completed by the user.
+
+Now every time I ask Claude to do TDPP, it will follow the process outlined above.
+
+## Example 2: Beads Superpowers 
+
+<InfoBox>
+💡 **[Beads](https://github.com/steveyegge/beads)** is a CLI-based issue tracking system that stores its metadata in version control.
+</InfoBox>
+
+Recently I received the following email:
+
+> I was combing through beads issues on github and noticed you appear to use both superpowers and beads skills.  What have you found as a successful workflow for using both in harmony.  Are there specific modifications you have used to the AGENTS.md that have worked well with instructing the agent to use beads after using a superpower?
+
+I gave the following feedback:
+
+> A useful pattern that I have discovered to keep Claude on track is to **give your process a name**. Put something like the following in your CLAUDE.md:
+>
+> > **IMPORTANT**: When asked to use BSP (beads superpowers), use the brainstorming skill with the designs stored using beads. 
+>
+> <em data-tooltip="Your Mileage May Vary">YMMV</em>, but I have found this to be a fairly effective way to get the agent to use a combination of skills and tools together.
+
+I never heard back, so I'm not sure how my advice worked out for them. However, I have had great success with this approach. 
+
+-----
+
+I am sure there are others who have devised their own agentic processes. I would love to hear about them. 
+
+What has worked for you? If you try my approach, I'd love to hear your feedback. Let me know in the comments or via email.

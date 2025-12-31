@@ -1,0 +1,41 @@
+---
+export interface Props {
+    title?: string;
+}
+
+const { title } = Astro.props;
+---
+
+<div class="info-box">
+    {title ? <strong class="info-box-title">{title}</strong> : null}
+    <div class="info-box-content">
+        <slot />
+    </div>
+</div>
+
+<style>
+    .info-box {
+        background: var(--pico-secondary-background);
+        border-left: 4px solid var(--pico-color-violet-50);
+        padding: 1rem;
+        margin: 1.5rem 0;
+        border-radius: var(--pico-border-radius);
+    }
+
+    .info-box strong {
+        color: var(--pico-color-violet-50);
+        display: block;
+        margin-bottom: 0.5rem;
+    }
+
+    .info-box-title {
+        font-size: 1rem;
+        font-weight: bold;
+        color: var(--pico-color-violet-50);
+    }
+
+    .info-box-content {
+        font-size: 0.85rem;
+        color: var(--pico-color);
+    }
+</style>
