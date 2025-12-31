@@ -1,0 +1,59 @@
+#!/usr/bin/env bun
+//MISE description="Create a new blog post"
+
+function slugify(text: string): string {
+  return text
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-|-$/g, "");
+}
+
+function formatDate(date: Date): string {
+  return date.toISOString().split("T")[0];
+}
+
+console.log("\n📝 Create a new blog post\n");
+
+const title = prompt("Title:")?.trim();
+if (!title) {
+  console.error("Title is required");
+  process.exit(1);
+}
+
+const description = prompt("Description:")?.trim() || "Post description here";
+
+const tagsInput = prompt("Tags (comma-separated):")?.trim() || "";
+const tags = tagsInput
+  .split(",")
+  .map((t) => t.trim())
+  .filter((t) => t.length > 0);
+
+const featured = prompt("Featured? (y/N):")?.toLowerCase() === "y";
+const draft = prompt("Draft? (Y/n):")?.toLowerCase() !== "n";
+
+const date = formatDate(new Date());
+const slug = slugify(title);
+const filename = `${date}-${slug}.mdx`;
+const filepath = `${import.meta.dir}/../../src/content/blog/${filename}`;
+
+const tagsArray = tags.length > 0 ? `[${tags.map((t) => `"${t}"`).join(", ")}]` : "[]";
+
+const content = `---
+title: "${title}"
+description: "${description}"
+date: ${date}
+author: "Simon Hartcher"
+tags: ${tagsArray}
+featured: ${featured}
+draft: ${draft}
+---
+
+Write your post here...
+`;
+
+await Bun.write(filepath, content);
+
+console.log(`\n✅ Created: src/content/blog/${filename}`);
+if (draft) {
+  console.log("   (marked as draft - set draft: false to publish)");
+}
