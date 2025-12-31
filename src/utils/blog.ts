@@ -1,5 +1,6 @@
 import type { CollectionEntry } from "astro:content";
 import type { ImageMetadata } from "astro";
+import defaultCover from "../assets/cover-placeholder.avif";
 
 // Type for cover image - either an imported image or a string path
 export type ImageRef = ImageMetadata | string;
@@ -107,13 +108,13 @@ export function getResponsiveImagePaths(post: CollectionEntry<"blog">) {
     medium: `/posts/${slug}/cover-medium.webp`,
     large: `/posts/${slug}/cover-large.webp`,
     xlarge: `/posts/${slug}/cover-xlarge.webp`,
-    default: getPostCoverImage(post)?.src,
+    default: getPostCoverImage(post).src,
   };
 }
 
 export function getPostCoverImage(
   post: CollectionEntry<"blog">,
-): ImageMetadata | undefined {
+): ImageMetadata {
   // Import MDX files to access their exports
   const mdxModules = import.meta.glob("src/content/blog/**/*.mdx", {
     eager: true,
@@ -126,12 +127,13 @@ export function getPostCoverImage(
 
   // If no export, handle cover image from frontmatter - supports both co-located images and legacy assets folder
   if (!coverImage && post.data.cover) {
-    const modules = import.meta.glob("src/assets/**/*.{webp,jpg,jpeg,png}", {
+    const modules = import.meta.glob("src/assets/**/*.{webp,jpg,jpeg,png,avif}", {
       eager: true,
     }) as Record<string, { default: ImageMetadata }>;
 
     coverImage = resolveCoverImageSync(post.data.cover, modules);
   }
 
-  return coverImage;
+  // Return default cover if no cover image is found
+  return coverImage || defaultCover;
 }

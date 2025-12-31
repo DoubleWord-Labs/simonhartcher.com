@@ -37,14 +37,12 @@ const recentPosts = allPosts.filter((post) => !post.data.featured);
                     return (
                         <article class="blog-post__featured">
                             <a href={getPostUrl(post)}>
-                                {coverImage && (
-                                    <Image
-                                        src={coverImage}
-                                        alt="Cover image"
-                                        class="cover"
-                                        priority
-                                    />
-                                )}
+                                <Image
+                                    src={coverImage}
+                                    alt="Cover image"
+                                    class="cover"
+                                    priority
+                                />
                             </a>
                             <div class="blog-post__card__content">
                                 <a
@@ -98,7 +96,7 @@ const recentPosts = allPosts.filter((post) => !post.data.featured);
                     >
                         <Image
                             class="blog-post__card__cover-thumb"
-                            src={getPostCoverImage(post)!}
+                            src={getPostCoverImage(post)}
                             alt="Cover image"
                             densities={[1.5, 2.0]}
                         />
