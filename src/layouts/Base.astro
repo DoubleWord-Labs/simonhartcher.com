@@ -10,11 +10,15 @@ export interface Props {
     title: string;
     description?: string;
     image?: string;
+    url?: string;
 }
 
-const { title, description = "Simon Hartcher's Blog", image } = Astro.props;
+const { title, description = "Simon Hartcher's Blog", image, url } = Astro.props;
 const siteTitle = "Simon Hartcher";
 const fullTitle = title ? `${title} | ${siteTitle}` : siteTitle;
+const siteUrl = "https://simonhartcher.com";
+const canonicalUrl = url ? `${siteUrl}${url}` : siteUrl;
+const ogImage = image ? (image.startsWith('http') ? image : `${siteUrl}${image}`) : undefined;
 ---
 
 <script>
@@ -27,16 +31,26 @@ const fullTitle = title ? `${title} | ${siteTitle}` : siteTitle;
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <meta name="color-scheme" content="light dark" />
         <meta name="description" content={description} />
+
+        <!-- Open Graph -->
+        <meta property="og:type" content="website" />
+        <meta property="og:site_name" content={siteTitle} />
+        <meta property="og:title" content={fullTitle} />
+        <meta property="og:description" content={description} />
+        <meta property="og:url" content={canonicalUrl} />
+        {ogImage && <meta property="og:image" content={ogImage} />}
+        {ogImage && <meta property="og:image:alt" content={title || "Cover image"} />}
+
+        <!-- Twitter Card -->
         <meta name="twitter:card" content="summary_large_image" />
         <meta name="twitter:site" content="@deevus" />
-        <meta name="twitter:author" content="@deevus" />
-        <meta name="twitter:description" content={description} />
+        <meta name="twitter:creator" content="@deevus" />
         <meta name="twitter:title" content={fullTitle} />
-        {image && <meta name="twitter:image" content={image} />}
-        <meta property="og:type" content="website" />
-        <meta property="og:title" content={fullTitle} />
-        {image && <meta property="og:image" content={image} />}
+        <meta name="twitter:description" content={description} />
+        {ogImage && <meta name="twitter:image" content={ogImage} />}
+
         <meta http-equiv="x-ua-compatible" content="ie=edge" />
+        <link rel="canonical" href={canonicalUrl} />
         <title>{fullTitle}</title>
         <link
             rel="alternate"

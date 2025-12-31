@@ -8,9 +8,10 @@ if (!page) throw new Error('Subscribe page not found');
 const { Content } = await render(page);
 ---
 
-<Base 
+<Base
   title={page.data.title}
   description={page.data.description || "Subscribe to Simon Hartcher's blog"}
+  url="/subscribe"
 >
   <article class="page">
     <div class="page-content">

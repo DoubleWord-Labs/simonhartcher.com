@@ -23,12 +23,15 @@ const post = Astro.props;
 const { Content } = await render(post);
 
 const coverImage = getPostCoverImage(post);
+const postSlug = getPostSlug(post.id);
+const postUrl = `/posts/${postSlug}`;
 ---
 
 <Base
     title={post.data.title}
     description={post.data.description}
     image={coverImage.src}
+    url={postUrl}
 >
     <article class="blog-post">
         <div class="cover-image">
