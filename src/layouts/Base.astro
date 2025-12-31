@@ -52,6 +52,11 @@ const ogImage = image ? (image.startsWith('http') ? image : `${siteUrl}${image}`
         <meta http-equiv="x-ua-compatible" content="ie=edge" />
         <link rel="canonical" href={canonicalUrl} />
         <title>{fullTitle}</title>
+
+        <!-- Favicons -->
+        <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+        <link rel="apple-touch-icon" href="/favicon.svg" />
+
         <link
             rel="alternate"
             type="application/rss+xml"
