@@ -21,3 +21,6 @@ description = "Check Astro project for TypeScript errors"
 [tasks.sync]
 run = "astro sync"
 description = "Sync Astro content collections"
+
+[hooks]
+postinstall = "bun install"
