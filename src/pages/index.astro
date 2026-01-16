@@ -12,7 +12,7 @@ import { Image } from "astro:assets";
 // Get blog posts
 const posts = await getCollection("blog");
 const allPosts = posts
-    .filter((post) => !post.data.draft)
+    .filter((post) => import.meta.env.DEV || !post.data.draft)
     .sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf());
 
 const featuredPosts = allPosts.filter((post) => post.data.featured);

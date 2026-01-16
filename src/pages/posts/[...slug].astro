@@ -13,10 +13,12 @@ import {
 
 export async function getStaticPaths() {
     const posts = await getCollection("blog");
-    return posts.map((post) => ({
-        params: { slug: getPostSlug(post.id) },
-        props: post,
-    }));
+    return posts
+        .filter((post) => import.meta.env.DEV || !post.data.draft)
+        .map((post) => ({
+            params: { slug: getPostSlug(post.id) },
+            props: post,
+        }));
 }
 
 const post = Astro.props;
