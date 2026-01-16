@@ -1,0 +1,365 @@
+---
+title: "My Projects in 2025"
+description: "A look back at my product, tool and game development projects from 2025, plus reflections on freelancing and personal growth."
+date: 2026-01-08
+author: "Simon Hartcher"
+tags: ["year-in-review", "godot", "zig", "go", "lan-party", "game-development", "prototyping", "reflection"]
+featured: true
+draft: false
+---
+
+import cover from "./2026-01-08-my-projects-in-2025.jpg";
+export { cover }
+
+import { Image } from "astro:assets";
+import ProjectCard from "../../components/ProjectCard.astro";
+
+This is a look back on the projects that I worked on during 2025. I've never posted anything like this before, and hopefully it won't be the last time. 
+
+## Overview
+
+2025 was heavily focused on **Zig** and **game development with Godot**. I contributed to multiple organisations and created several new tools and libraries, in varying states of release. 
+
+It was the first time that I have been able to write Zig professionally, and I hope to do more in the future. The year also included a bit of Go and Python. I got pretty familiar with [OpenSSL](https://www.openssl.org/) and discovered how archaic it is. I've definitely enjoyed working with [libsodium](https://doc.libsodium.org/) much more than OpenSSL. 
+
+In terms of personal projects, most of my time was probably spent working on [gdzig](https://github.com/gdzig/gdzig) and its related projects. Gdzig is a hard fork of the now dead [godot-zig](https://github.com/godot-zig/godot-zig) project, which aims to bring Zig and Godot together. Shout out to [Tristan Pemble](https://tristanpemble.com/about/) who has been my main co-conspirator on the gdzig project. 
+
+I have also [vibe engineered](https://simonwillison.net/2025/Oct/7/vibe-engineering/) several prototypes and MVPs, most of which have not gone anywhere. 
+
+1. Getting binary builds of Ruby into [mise](https://mise.jdx.dev/) (because I hate that building Ruby is a standard practice)
+2. Social media management for game developers
+3. A todo app for ADHD using the Socratic method
+4. Finding the best times to post to Hacker News for your timezone
+5. Voting app for LAN parties
+6. Feature crowd-funding for GitHub
+
+Without further ado, here are the projects with a short description of each, and their current status. 
+
+## Game development
+
+### Games
+
+<ProjectCard title="Parasite Attack 1984" status="in-progress" steam="https://store.steampowered.com/app/3245960/Parasite_Attack_1984/">
+    <Image src={import("./images/pa84.jpg")} alt="Parasite Attack 1984 Capsule Image" />
+A retro-styled action game inspired by Space Invaders and Missile Command. It's a solo project that's been in development on and off for a couple of years.
+<br />
+Due to issues with my mental health in 2025, I really haven't given PA84 the attention that it deserves. Though, to be perfectly honest, I don't think there's much of a market for this type of game. I've never received the kind of feedback that would indicate to me that this is a game that people are clamouring for. 
+<br />
+My current plan is to polish the rough edges and just release it for a couple of bucks. 
+</ProjectCard>
+
+### Godot tooling
+
+<ProjectCard title="gdzig" status="in-progress" tags={["Game jam soon?"]} github="https://github.com/gdzig/gdzig">
+Zig bindings for Godot 4.x, forked from the now-defunct godot-zig project. Code generation is at the core of how gdzig works. We process the `GDExtension` API and C headers and generate Zig structs for every Godot Engine class and method. We have given great care to using Zig's `comptime` to maximise performance and reduce the need for allocations. 
+<br />
+A novel technical tidbit is that we have a `@mixin` system that I borrowed from other languages. Using Zig's `Ast` we can replace auto-generated code with hand-written replacements. 
+</ProjectCard>
+
+<ProjectCard title="gdoc" status="in-progress" github="https://github.com/gdzig/gdoc">
+    <Image src={import("./images/gdoc_quaternion.png")} alt="gdoc screenshot" style={{margin: 0}} />
+
+    gdoc (pronounced guh-doc) is a command-line documentation viewer for Godot Engine. Instantly look up classes, methods, and properties without leaving your terminal or opening a browser.
+    <br />
+    I was using the JSON API dumped from the Godot binary, but I recently discovered that it does not have **all** of the docs. Tutorial links and some global classes are not documented in there, and need to be pulled directly from XML files in the Godot Engine source. My plan is to look more deeply into this so that I can get it all on the CLI. 
+</ProjectCard>
+
+<ProjectCard title="gd-pretty" status="in-progress" tags={["stalled"]} github="https://github.com/deevus/gd-pretty">
+  A pretty-print formatter for Godot's scripting language `gdscript`. I had been using `gdformat` that comes with the `gdtoolkit` written in Python, but I found its performance to be fairly lacklustre. 
+  <br />
+  `gd-pretty` is written in Zig and uses `tree-sitter` under the hood. My philosophy for `gd-pretty` is to follow how the `zig fmt` tool works. There are no configuration options. You control how code is formatted by using things like trailing commas (or not). 
+  <br />
+  This project uses snapshot tests that I lovingly stole from `gdformat`. As I continue to work on it, I can see visual feedback in the tests. 
+</ProjectCard>
+
+### Libraries
+
+<ProjectCard title="zig-goap" status="prototype" github="https://github.com/deevus/zig-goap">
+A Goal-Oriented Action Planning library written in Zig. GOAP is an AI technique commonly used in games for decision-making. There is a [great video on YouTube by AI and Games](https://www.youtube.com/watch?v=PaOLBOuyswI&pp=ygUEZ29hcA%3D%3D) that goes into detail about how GOAP works and why it was such an important development in AI. 
+<br />
+My current plan for this project is to use `gdzig` to package it into an extension for the [Godot Asset Library](https://godotengine.org/asset-library/asset).
+</ProjectCard>
+
+### Miscellaneous
+
+<ProjectCard title="ROLLER" status="in-progress">
+    <Image src={import("./images/fatal_racing.jpg")} alt="Fatal Racing/Whiplash" />
+    This project aims to implement all the functionality of the 1995 game [Whiplash/Fatal Racing](https://en.wikipedia.org/wiki/Fatal_Racing) in a way that builds and runs on modern PCs. Where necessary, DOS-specific functions are substituted with SDL and Windows/Unix equivalents. 
+    <br />
+    This process all started when I discovered a debug version of Fatal Racing on [archive.org](https://archive.org). With the help of [wcdatool](https://github.com/fonic/wcdatool) I was able to reverse engineer many aspects of the data format with the hardest piece being the `unmangle` method. See [`loadcompactedfile`](https://github.com/FatalDecomp/ROLLER/blob/57f808b382d56c860e5ccbaf38bcdf9c59ecc1c8/PROJECTS/ROLLER/sound.c#L3944C6-L3944C27).
+    <br />
+    Using my foundational work along with contributions from others, particularly [Zizin13](https://github.com/Zizin13), Fatal Racing is [playable on modern systems](https://youtu.be/JvoiQTRjt88?si=Z7MpwP3hoZkPUkZg).
+</ProjectCard>
+
+<ProjectCard title="GamePost" status="prototype">
+A social media management app for indie game developers. One of the frustrations that I have had with trying to market my games is syndicating posts to multiple sites. There are some solutions out there but they have expensive monthly subscriptions. 
+<br />
+My thought was to create an offline-first single purchase app that can post to all the major socials. If you need to sync, every platform has a way to do that. The only ongoing monetisation that I had considered was to provide rich aggregate analytics. 
+<br />
+GamePost never got to a testable state. I really need to revisit this now that I have "mastered" Claude Code. I think I could whip something up pretty quickly. 
+</ProjectCard>
+
+## Other highlights
+
+<ProjectCard title="bbcodez" status="in-progress" github="https://github.com/gdzig/bbcodez">
+A BBCode parser written in Zig. If you ever posted on a forum in the early 2000's, you know bbcode. It sounds antiquated, but there are still PHPBB forums live today that use it. 
+<br />
+Used by `gdzig` to convert the Godot Engine documentation from bbcode to markdown. You can see it in action on the [gdzig documentation site](https://gdzig.github.io/gdzig/#gdzig.builtin.Vector2)
+</ProjectCard>
+
+<ProjectCard title="zed-windows-builds" status="maintained" github="https://github.com/deevus/zed-windows-builds">
+Official Zed editor support for Windows is only a recent thing. I'm not even using Windows anymore, but when I was, I wanted to use Zed. Building Zed for Windows was pretty straight forward, and there wasn't a way to get binaries, so I made one myself. 
+<br />
+If you're happy with stable builds, you should use the official builds, but there are still many users who are on the bleeding edge using the nightly builds that I still maintain.
+</ProjectCard>
+
+<ProjectCard title="compile_flagz" status="prototype" github="https://github.com/deevus/compile_flagz" website="https://simonhartcher.com/posts/2025-09-08-announcing-compile-flagz/">
+    A Zig library for generating `compile_flags.txt` files to improve C/C++ IDE integration in projects that use Zig as their build system.
+    <br />
+    Read more about it in the links below.
+</ProjectCard>
+
+## Vibes
+
+These are projects that are [vibe engineered](https://simonwillison.net/2025/Oct/7/vibe-engineering/) using Claude Code.
+
+<ProjectCard title="mise-rv-ruby" status="prototype" tags={["Working"]} github="https://github.com/deevus/mise-rv-ruby">
+  A mise backend for Ruby using [rv](https://github.com/jdx/rv) to provide precompiled Ruby binaries. Because building Ruby from source is painful and I hate it.
+  <br />
+  I will eventually clean this up and submit to `mise` if jdx will have it.
+</ProjectCard>
+
+<ProjectCard title="feature fund" status="prototype" tags={["validation needed"]}>
+  A platform concept for crowd-funding features on GitHub repositories. Comment something like `@featurefund pledge $50`. When the minimum pledge amount is reached, the campaign can be claimed. To put it simply, when the maintainer approves and merges a PR with a pledge, the developer gets the funds. 
+  <br />
+  I think this is useful because it allows the community to put their money behind features they want/need. It also still allows the project maintainer control over what features they actually want in their project. I have more thoughts on this, so contact me if you have questions or concerns.
+</ProjectCard>
+
+<ProjectCard title="hn posting tool" status="released" website="https://simonhartcher.com/tools/hacker-news-global-posting-strategy-tool">
+I [posted about this](https://simonhartcher.com/posts/2025-09-10-best-times-to-post-on-hacker-news-according-to-claude/). It's a tool to find the best times to post to Hacker News based on your timezone. The numbers are magic and the outcomes are not guaranteed. 
+<br />
+I [dogfooded](https://en.wikipedia.org/wiki/Eating_your_own_dog_food) the blog post about it by using the tool to work out when to post it. It did terribly! Conversely, I used it for my [post about Apple v Framework laptops](https://simonhartcher.com/posts/2025-09-22-why-im-spoiled-by-apple-silicon-but-still-love-framework/) and that was on the front page for several days. 
+<br /> 
+Link below. Your mileage may vary.
+</ProjectCard>
+
+<ProjectCard title="votigo" status="released" tags={["to be tested"]} github="https://github.com/deevus/votigo">
+    <Image src={import("./images/votigo_windows_xp.png")} alt="Votigo running on Windows XP" style={{marginTop: 0}} />
+    A voting app designed for LAN parties. Works on modern devices and ancient browsers (IE 6-7, Netscape). I added a CLI so that you can use an LLM to manage polls. 
+    <br />
+    It serves both a modern and legacy UI on ports 443 and 80 respectively. Ancient browsers will have no problem with port 80, and modern browsers will just use HTTPS (443). 
+    <br />
+    I won't claim that it is secure. The intention is to host it at a private LAN party. 
+</ProjectCard>
+
+<ProjectCard title="socratodo" status="prototype">
+    A todo app for people with ADHD that uses the Socratic method to help break down overwhelming tasks into manageable steps.
+    <Image src={import("./images/socratodo_cheese.jpeg")} alt="Socratodo on an iPhone" height="500" />
+    What I found was that it works great, but testers would often put in silly goals like "I want to eat more cheese". When they put in something more difficult like "Plan a camping trip", the outcome was much better. 
+    <Image src={import("./images/socratodo_concrete.jpeg")} alt="Socratodo asking a clarifying question" height="500" />
+    It asks clarifying questions and when it is done, it will present a list of tasks that you can either accept or give it feedback on what you meant.
+    <Image src={import("./images/socratodo_concrete_tasks.jpeg")} alt="Socratodo presenting its understanding of a concrete business" height="500" />
+</ProjectCard>
+
+## Reflection
+
+2025 was a challenging year for me for both personal and business reasons. 
+
+### Business 
+
+Back in 2023 I transitioned from a full-time startup CTO to a freelance software development contractor. At the start of the 2024-25 financial year, I created an official entity for my contract work for operational and tax reasons. This also meant that I needed to transition to more project-based work instead of labour-for-hire, for complicated and boring Australian tax reasons that I won't expand on here. 
+
+Professionally I have had the opportunity to work on some really interesting projects in languages that I only dreamed of getting paid for. In particular, getting to work with low-level cryptography and security primitives has been amazing. 
+
+### Personal
+
+Following a sleep study and years of terrible sleep, I was diagnosed with sleep apnoea (my wife was not surprised). Getting a CPAP machine was literally life-changing. I cried on the first morning after sleeping with the mask on. It felt like I was finally awake after years of auto-pilot from lack of sleep. If you suspect that you might have sleep apnoea, I implore you to talk to your doctor and book a sleep study. 
+
+After getting the CPAP machine and settling into this new normal, I was struck by a level of clarity higher than what I had before. This clarity made me want to prioritise other health issues that needed addressing. I started therapy and I think those that know will understand why 2025 has been possibly the most challenging year of my life. 
+
+## 2026
+
+Writing this, I am feeling optimistic about 2026. I am proud that I was able to actually finish a few prototypes and test them with people. Additionally, a few years of crippling debt is about to end. I feel things can only get better from here. 
+
+Happy New Year! 🍻
+
+---
+
+REFERENCE MATERIALS 
+DELETE BEFORE PUBLISHING
+
+---
+
+## Personal Projects (Original)
+
+| Repository | Commits | First | Last | Description |
+|------------|---------|-------|------|-------------|
+| [gd-pretty](https://github.com/deevus/gd-pretty) | 75 | Apr 26 | Sep 19 | GDScript formatter |
+| [zed-windows-builds](https://github.com/deevus/zed-windows-builds) | 71 | Jan 20 | Nov 12 | Zed editor Windows builds |
+| [votigo](https://github.com/deevus/votigo) | 64 | Dec 25 | Dec 28 | Voting application |
+| [zig-goap](https://github.com/deevus/zig-goap) | 19 | Oct 12 | Dec 23 | Goal-Oriented Action Planning in Zig |
+| [zig-pass](https://github.com/deevus/zig-pass) | 16 | Apr 4 | May 21 | Terminal client for Password Store (cross-platform) |
+| [mise-rv-ruby](https://github.com/deevus/mise-rv-ruby) | 14 | Nov 3 | Nov 3 | Mise backend for Ruby using rv |
+| [compile_flagz](https://github.com/deevus/compile_flagz) | 12 | Jul 20 | Sep 10 | Compile flags library for Zig |
+| [zig-squarified](https://github.com/deevus/zig-squarified) | 7 | Jan 2 | Jan 5 | Squarified treemap algorithm |
+| [zig-dir-stat](https://github.com/deevus/zig-dir-stat) | 3 | Jan 4 | Jan 5 | Directory statistics |
+| [analytics-plugin-tapfiliate](https://github.com/deevus/analytics-plugin-tapfiliate) | 3 | Jan 8 | Jan 8 | Tapfiliate analytics plugin |
+| [Zig-Playdate-SDK](https://github.com/deevus/Zig-Playdate-SDK) | 2 | Mar 7 | Mar 7 | Playdate SDK for Zig |
+
+## Forks with Contributions
+
+| Repository | Commits | Forked From | First | Last |
+|------------|---------|-------------|-------|------|
+| [aws-sdk-for-zig](https://github.com/deevus/aws-sdk-for-zig) | 68 | elerch/aws-sdk-for-zig | Mar 13 | Jun 5 |
+| [temp.zig](https://github.com/deevus/temp.zig) | 7 | abhinav/temp.zig | Mar 6 | Sep 10 |
+| [wildmidi](https://github.com/deevus/wildmidi) | 7 | Mindwerks/wildmidi | — | Sep 8 |
+| [bbcpp](https://github.com/deevus/bbcpp) | 3 | zethon/bbcpp | Jun 23 | Jun 24 |
+| [laravel-shield](https://github.com/deevus/laravel-shield) | 3 | vinkla/laravel-shield | Feb 14 | Feb 14 |
+| [zeit](https://github.com/deevus/zeit) | 2 | rockorager/zeit | Apr 22 | Apr 22 |
+| [pass-to-bitwarden](https://github.com/deevus/pass-to-bitwarden) | 2 | philsnow/pass-to-bitwarden | Sep 2 | Sep 2 |
+| [gpac](https://github.com/deevus/gpac) | 2 | gpac/gpac | Mar 24 | Mar 24 |
+| [case-z](https://github.com/deevus/case-z) | 1 | travisstaloch/case | Apr 30 | Apr 30 |
+| [jigar](https://github.com/deevus/jigar) | 1 | alichraghi/jigar | Apr 27 | Apr 27 |
+| [tls.zig](https://github.com/deevus/tls.zig) | 1 | ianic/tls.zig | Mar 5 | Mar 5 |
+| [zigsteroids-playdate](https://github.com/deevus/zigsteroids-playdate) | 1 | jdah/zigsteroids | Mar 7 | Mar 7 |
+| [super-basic-auth](https://github.com/deevus/super-basic-auth) | 1 | svenluijten/super-basic-auth | Feb 14 | Feb 14 |
+| [zig-libyuarel](https://github.com/deevus/zig-libyuarel) | 1 | jacketizer/libyuarel | Mar 5 | Mar 5 |
+
+## Private Projects
+
+| Repository | Commits | First | Last | Description |
+|------------|---------|-------|------|-------------|
+| dotfiles | 235 | Oct 6 | Dec 28 | Personal dotfiles |
+| pass-repo | 150 | Jul 28 | Dec 30 | Password store repository |
+| raisely-hubspot-connector | 60 | Feb 25 | Dec 5 | Raisely to HubSpot integration |
+| hn-posting-tool | 49 | Oct 23 | Nov 1 | Hacker News posting tool |
+| feature-fund | 29 | Nov 1 | Nov 3 | Feature funding platform |
+| couponstack | 20 | Feb 14 | Apr 29 | Coupon management |
+| experiments | 3 | Nov 7 | Nov 7 | Various experiments |
+
+---
+
+## gdzig Organisation
+
+Zig bindings and tooling for Godot game engine.
+
+| Repository | Commits | First | Last | Description |
+|------------|---------|-------|------|-------------|
+| [gdzig](https://github.com/gdzig/gdzig) | 191 | Jul 3 | Dec 22 | Zig bindings for Godot 4 |
+| [gdoc](https://github.com/gdzig/gdoc) | 81 | Nov 14 | Dec 19 | GDScript documentation generator |
+| [bbcodez](https://github.com/gdzig/bbcodez) | 44 | Jun 23 | Nov 19 | BBCode parser in Zig |
+| [Starter-Kit-3D-Platformer-Zig](https://github.com/gdzig/Starter-Kit-3D-Platformer-Zig) | 25 | Jul 1 | Sep 30 | 3D platformer starter kit |
+| [gdzig-template](https://github.com/gdzig/gdzig-template) | 2 | Oct 4 | Oct 4 | Project template |
+
+---
+
+## DoubleWord-Labs Organisation
+
+Game development studio and personal projects.
+
+### Public Projects
+
+| Repository | Commits | First | Last | Description |
+|------------|---------|-------|------|-------------|
+| [simonhartcher.com](https://github.com/DoubleWord-Labs/simonhartcher.com) | 149 | Feb 10 | Dec 31 | Personal website |
+| [Godot-Wild-Jam-78](https://github.com/DoubleWord-Labs/Godot-Wild-Jam-78) | 99 | Feb 15 | Feb 23 | Game jam entry |
+| [godot-zig-examples](https://github.com/DoubleWord-Labs/godot-zig-examples) | 13 | May 2 | Jun 24 | godot-zig examples |
+| [doublewordlabs.com](https://github.com/DoubleWord-Labs/doublewordlabs.com) | 8 | Mar 9 | Mar 12 | Company website |
+| [vector-z](https://github.com/DoubleWord-Labs/vector-z) | 4 | Jun 16 | Jun 16 | Fast SIMD vector math for Zig |
+
+### Game Projects (Private)
+
+| Repository | Commits | First | Last |
+|------------|---------|-------|------|
+| ParasiteAttack1984 | 35 | Jan 20 | Jul 30 |
+| Fe26-FurnaceOfFury | 11 | Mar 4 | Mar 21 |
+| wii-cricket | 7 | Jul 26 | Jul 29 |
+| armiez | 4 | Oct 4 | Oct 15 |
+| FrontlineLogistics | 3 | Jan 6 | Jan 12 |
+| BeatRacer | 1 | Jun 6 | Jun 6 |
+
+---
+
+## byterix-labs Organisation
+
+Security and encryption platform built with Go, Dart/Flutter, and Zig.
+
+### Public Projects
+
+| Repository | Commits | First | Last | Description |
+|------------|---------|-------|------|-------------|
+| [conduit-ts](https://github.com/byterix-labs/conduit-ts) | 12 | Jun 17 | Jun 20 | TypeScript conduit |
+| [conduit-z](https://github.com/byterix-labs/conduit-z) | 10 | Jun 17 | Jun 17 | Zig conduit |
+| [ttlv-z](https://github.com/byterix-labs/ttlv-z) | 9 | Jun 17 | Aug 12 | TTLV encoding in Zig |
+| [zodium](https://github.com/byterix-labs/zodium) | 3 | Jun 19 | Jun 19 | Zig library |
+| [dart-cryptography](https://github.com/byterix-labs/dart-cryptography) | 1 | Oct 2 | Oct 2 | Cryptography for Dart/Flutter |
+
+### Private Projects
+
+| Repository | Commits | First | Last | Description |
+|------------|---------|-------|------|-------------|
+| opal | 1005 | Dec 8 | Dec 18 | Flutter mobile application |
+| obsidian | 324 | Jul 21 | Oct 1 | Key management service (Zig) |
+| obsidian-client | 116 | Jan 22 | Aug 5 | Encryption client |
+| jade-ts | 39 | Feb 18 | Jun 19 | TypeScript Jade implementation |
+| granite | 36 | Jul 23 | Nov 6 | Python API |
+| safire | 5 | Aug 25 | Aug 25 | Go messaging/WebSocket API |
+| jade | 3 | Apr 15 | May 6 | File format specification |
+| jasper | 3 | Aug 13 | Aug 13 | Vue web UI |
+| basalt-sdk-dart | 3 | Dec 15 | Dec 15 | Dart SDK for basalt |
+| ios-certificates | 2 | Oct 1 | Oct 1 | App Store signing certificates |
+
+---
+
+## allyourcodebase Contribution
+
+| Repository | Commits | First | Last | Description |
+|------------|---------|-------|------|-------------|
+| [bchunk](https://github.com/allyourcodebase/bchunk) | 9 | Sep 4 | Sep 5 | BIN/CUE to ISO converter (Zig build port) |
+
+---
+
+## Sourcehut (git.sr.ht/~deevus)
+
+Projects hosted on Sourcehut instead of GitHub.
+
+| Repository | Commits | First | Last | Language | Description |
+|------------|---------|-------|------|----------|-------------|
+| [tododhd](https://git.sr.ht/~deevus/tododhd) | 21 | Dec 29 | Jan 1 | Go/React | Socratodo - ADHD todo app with Socratic questioning agent |
+| [claude-fs](https://git.sr.ht/~deevus/claude-fs) | 13 | Aug 24 | Oct 7 | Zig | Claude Code filesystem MCP server |
+| [zins](https://git.sr.ht/~deevus/zins) | 9 | May 15 | May 21 | Zig | Zig package manager for Zig programs |
+| [obsidian](https://git.sr.ht/~deevus/obsidian) | 7 | Jul 13 | Jul 13 | Zig | Key management service |
+| [GamePost](https://git.sr.ht/~deevus/GamePost) | 4 | Aug 14 | Aug 23 | Dart/Flutter | Social media posting app |
+| [godot-wild-jam-81](https://git.sr.ht/~deevus/godot-wild-jam-81) | 4 | May 10 | May 12 | GDScript | Game jam entry |
+| [avahi-z](https://git.sr.ht/~deevus/avahi-z) | 2 | Jun 11 | Jun 11 | Zig | Zig bindings for Avahi (Zeroconf/Bonjour) |
+
+---
+
+## Highlights
+
+### Most Active Projects (by commits)
+1. **byterix-labs/opal** — 1,005 commits (Flutter mobile app)
+2. **byterix-labs/obsidian** — 324 commits (Key management in Zig)
+3. **dotfiles** — 235 commits (Personal configuration)
+4. **gdzig/gdzig** — 191 commits (Zig bindings for Godot 4)
+5. **pass-repo** — 150 commits (Password store)
+6. **simonhartcher.com** — 149 commits (Personal website)
+7. **byterix-labs/obsidian-client** — 116 commits (Encryption client)
+8. **Godot-Wild-Jam-78** — 99 commits (Game jam)
+9. **gdzig/gdoc** — 81 commits (GDScript documentation)
+10. **gd-pretty** — 75 commits (GDScript formatter)
+
+### Game Jam Entries
+- **FrontlineLogistics** — Jan 6-12
+- **Godot-Wild-Jam-78** — Feb 15-23
+- **godot-wild-jam-81** — May 10-12
+- **BeatRacer** — Jun 6
+- **wii-cricket** — Jul 26-29
+
+### New Technologies Explored
+- Zig for game development (gdzig, godot-zig)
+- Playdate development (Zig-Playdate-SDK, zigsteroids-playdate)
+- Flutter/Dart for mobile (byterix-labs/opal, GamePost)
+- Go with Inertia.js + React (tododhd/Socratodo)
+- Avahi/Zeroconf bindings (avahi-z)
+- Zig as a package manager (zins)
