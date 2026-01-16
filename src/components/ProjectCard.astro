@@ -1,0 +1,177 @@
+---
+export interface Props {
+  title: string;
+  status: 'in-progress' | 'prototype' | 'released' | 'abandoned' | 'maintained';
+  tags?: string[];
+  github?: string;
+  steam?: string;
+  website?: string;
+  websiteIcon?: 'globe' | 'itch' | 'docs';
+}
+
+const { title, status, tags = [], github, steam, website, websiteIcon = 'globe' } = Astro.props;
+
+const statusLabels: Record<Props['status'], string> = {
+  'in-progress': 'In Progress',
+  'prototype': 'Prototype',
+  'released': 'Released',
+  'abandoned': 'Abandoned',
+  'maintained': 'Maintained',
+};
+
+const hasLinks = github || steam || website;
+---
+
+<div class={`project-card status-${status}`}>
+  <div class="project-header">
+    <strong class="project-title">{title}</strong>
+    <div class="project-badges">
+      <span class="status-pill">{statusLabels[status]}</span>
+      {tags.map(tag => <span class="tag-pill">{tag}</span>)}
+    </div>
+  </div>
+  <div class="project-content">
+    <slot />
+  </div>
+  {hasLinks && (
+    <div class="project-links">
+      {github && (
+        <a href={github} target="_blank" rel="noopener noreferrer" aria-label="View on GitHub" class="project-link">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+            <path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/>
+          </svg>
+        </a>
+      )}
+      {steam && (
+        <a href={steam} target="_blank" rel="noopener noreferrer" aria-label="View on Steam" class="project-link">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+            <path d="M11.979 0C5.678 0 .511 4.86.022 11.037l6.432 2.658c.545-.371 1.203-.59 1.912-.59.063 0 .125.004.188.006l2.861-4.142V8.91c0-2.495 2.028-4.524 4.524-4.524 2.494 0 4.524 2.031 4.524 4.527s-2.03 4.525-4.524 4.525h-.105l-4.076 2.911c0 .052.004.105.004.159 0 1.875-1.515 3.396-3.39 3.396-1.635 0-3.016-1.173-3.331-2.727L.436 15.27C1.862 20.307 6.486 24 11.979 24c6.627 0 11.999-5.373 11.999-12S18.605 0 11.979 0zM7.54 18.21l-1.473-.61c.262.543.714.999 1.314 1.25 1.297.539 2.793-.076 3.332-1.375.263-.63.264-1.319.005-1.949s-.75-1.121-1.377-1.383c-.624-.26-1.29-.249-1.878-.03l1.523.63c.956.4 1.409 1.5 1.009 2.455-.397.957-1.497 1.41-2.454 1.012H7.54zm11.415-9.303c0-1.662-1.353-3.015-3.015-3.015-1.665 0-3.015 1.353-3.015 3.015 0 1.665 1.35 3.015 3.015 3.015 1.663 0 3.015-1.35 3.015-3.015zm-5.273-.005c0-1.252 1.013-2.266 2.265-2.266 1.249 0 2.266 1.014 2.266 2.266 0 1.251-1.017 2.265-2.266 2.265-1.253 0-2.265-1.014-2.265-2.265z"/>
+          </svg>
+        </a>
+      )}
+      {website && websiteIcon === 'globe' && (
+        <a href={website} target="_blank" rel="noopener noreferrer" aria-label="Visit website" class="project-link">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="10"/>
+            <line x1="2" y1="12" x2="22" y2="12"/>
+            <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/>
+          </svg>
+        </a>
+      )}
+      {website && websiteIcon === 'itch' && (
+        <a href={website} target="_blank" rel="noopener noreferrer" aria-label="View on itch.io" class="project-link">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+            <path d="M3.13 1.338C2.08 1.96.02 4.328 0 4.95v1.03c0 1.303 1.22 2.45 2.325 2.45 1.33 0 2.436-1.102 2.436-2.41 0 1.308 1.07 2.41 2.4 2.41 1.328 0 2.362-1.102 2.362-2.41 0 1.308 1.137 2.41 2.466 2.41h.024c1.33 0 2.466-1.102 2.466-2.41 0 1.308 1.034 2.41 2.363 2.41 1.33 0 2.4-1.102 2.4-2.41 0 1.308 1.106 2.41 2.435 2.41C22.78 8.43 24 7.282 24 5.98V4.95c-.02-.62-2.082-2.99-3.13-3.612-3.253-.114-5.508-.134-8.87-.134-3.362 0-5.617.02-8.87.134zm6.59 6.71c-.192.39-.53.752-.942.98-.778.398-1.31.418-1.91.418-.6 0-1.13-.02-1.91-.418-.41-.228-.75-.59-.94-.98-.08.19-.17.39-.266.58-.25.5-.332.673-.623.99-.476.516-1.142.796-1.79.792 0 .218.036 1.055.097 1.25.39 1.217 1.4 1.03 4.455 1.88 1.277.354 1.762 1.18 1.762 2.15v3.56c.024.833.09 1.25.166 1.55.112.445.463.8.995.8h4.36c.534 0 .884-.355.996-.8.076-.3.14-.717.166-1.55v-3.56c0-.97.484-1.796 1.76-2.15 3.057-.85 4.067-.663 4.457-1.88.063-.195.097-1.032.097-1.25-.647.004-1.313-.276-1.79-.792-.29-.317-.373-.49-.622-.99-.098-.19-.187-.39-.267-.58-.19.39-.53.752-.94.98-.78.398-1.31.418-1.91.418-.6 0-1.132-.02-1.91-.418-.413-.228-.75-.59-.942-.98-.19.39-.53.752-.942.98-.778.398-1.31.418-1.91.418-.6 0-1.13-.02-1.91-.418-.412-.228-.75-.59-.942-.98zM9.77 12.03c.063.023 1.753.74 2.23.74.477 0 2.168-.717 2.23-.74v3.39c-.007.683-1.33 1.73-2.23 1.73-.9 0-2.222-1.047-2.23-1.73v-3.39z"/>
+          </svg>
+        </a>
+      )}
+      {website && websiteIcon === 'docs' && (
+        <a href={website} target="_blank" rel="noopener noreferrer" aria-label="View documentation" class="project-link">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/>
+            <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/>
+          </svg>
+        </a>
+      )}
+    </div>
+  )}
+</div>
+
+<style>
+  .project-card {
+    --status-color: var(--pico-muted-color);
+    background: color-mix(in srgb, var(--status-color) 8%, var(--pico-code-background-color));
+    border-left: 4px solid var(--status-color);
+    padding: 1rem;
+    margin: 1.5rem 0;
+    border-radius: var(--pico-border-radius);
+  }
+
+  .project-card.status-released {
+    --status-color: #22c55e;
+  }
+
+  .project-card.status-in-progress {
+    --status-color: #f59e0b;
+  }
+
+  .project-card.status-prototype {
+    --status-color: #3b82f6;
+  }
+
+  .project-card.status-maintained {
+    --status-color: #14b8a6;
+  }
+
+  .project-card.status-abandoned {
+    --status-color: #6b7280;
+  }
+
+  .project-header {
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    gap: 0.75rem;
+    margin-bottom: 0.5rem;
+  }
+
+  .project-title {
+    color: var(--pico-primary);
+    font-size: 1rem;
+  }
+
+  .project-badges {
+    display: flex;
+    gap: 0.5rem;
+    align-items: center;
+    flex-wrap: wrap;
+  }
+
+  .status-pill {
+    font-size: 0.7rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    padding: 0.2rem 0.6rem;
+    border-radius: 999px;
+    background: color-mix(in srgb, var(--status-color) 15%, transparent);
+    color: var(--status-color);
+    font-weight: 600;
+  }
+
+  .tag-pill {
+    font-size: 0.7rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    padding: 0.2rem 0.6rem;
+    border-radius: 999px;
+    background: color-mix(in srgb, var(--pico-muted-color) 20%, transparent);
+    color: var(--pico-muted-color);
+    font-weight: 600;
+  }
+
+  .project-content {
+    font-size: 0.9rem;
+    color: var(--pico-color);
+  }
+
+  .project-content :global(p) {
+    margin: 0;
+  }
+
+  .project-links {
+    display: flex;
+    gap: 0.5rem;
+    margin-top: 0.75rem;
+  }
+
+  .project-link {
+    color: var(--pico-primary);
+    transition: color 0.2s ease;
+    display: flex;
+    align-items: center;
+  }
+
+  .project-link:hover {
+    color: var(--pico-primary-hover);
+  }
+</style>
