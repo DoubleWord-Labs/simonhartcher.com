@@ -1,0 +1,232 @@
+---
+import Base from '../layouts/Base.astro';
+import InfoBox from '../components/InfoBox.astro';
+import ProjectCard from '../components/ProjectCard.astro';
+import ExternalLink from '../components/ExternalLink.astro';
+---
+
+<Base
+  title="Kitchen Sink"
+  description="Component showcase for development"
+  url="/kitchen-sink"
+>
+  <article class="kitchen-sink">
+    <h1>Kitchen Sink</h1>
+    <p class="lead">A showcase of all custom components used on this site.</p>
+
+    <div class="theme-grid">
+      <section class="theme-section" data-theme="light">
+        <span class="theme-label">Light</span>
+
+        <h2>InfoBox</h2>
+        <p>A callout box for highlighting information.</p>
+
+        <InfoBox>
+          This is an InfoBox without a title.
+        </InfoBox>
+        <InfoBox title="Note">
+          This is an InfoBox with a title.
+        </InfoBox>
+
+        <h2>ProjectCard</h2>
+        <p>A card for displaying project information.</p>
+
+        <h3>Status variants</h3>
+        <ProjectCard title="Released" status="released" github="https://github.com">
+          Green indicates shipped and available.
+        </ProjectCard>
+        <ProjectCard title="In Progress" status="in-progress" github="https://github.com">
+          Amber indicates active development.
+        </ProjectCard>
+        <ProjectCard title="Prototype" status="prototype" github="https://github.com">
+          Blue indicates experimental.
+        </ProjectCard>
+        <ProjectCard title="Maintained" status="maintained" github="https://github.com">
+          Teal indicates steady care.
+        </ProjectCard>
+        <ProjectCard title="Abandoned" status="abandoned">
+          Gray indicates inactive.
+        </ProjectCard>
+
+        <h3>With tags</h3>
+        <ProjectCard title="Stalled project" status="in-progress" tags={["stalled"]} github="https://github.com">
+          A project with an additional tag.
+        </ProjectCard>
+        <ProjectCard title="Needs validation" status="abandoned" tags={["validation needed"]}>
+          A project needing validation before revival.
+        </ProjectCard>
+        <ProjectCard title="Multiple tags" status="prototype" tags={["stalled", "needs review"]} github="https://github.com">
+          A project with multiple tags.
+        </ProjectCard>
+
+        <h3>Link variants</h3>
+        <ProjectCard title="GitHub" status="released" github="https://github.com">
+          GitHub link only.
+        </ProjectCard>
+        <ProjectCard title="Steam" status="released" steam="https://store.steampowered.com">
+          Steam link only.
+        </ProjectCard>
+        <ProjectCard title="Website (globe)" status="released" website="https://example.com">
+          Default globe icon.
+        </ProjectCard>
+        <ProjectCard title="Website (itch)" status="released" website="https://itch.io" websiteIcon="itch">
+          Itch.io icon.
+        </ProjectCard>
+        <ProjectCard title="Website (docs)" status="released" website="https://docs.example.com" websiteIcon="docs">
+          Documentation icon.
+        </ProjectCard>
+        <ProjectCard
+          title="All links"
+          status="released"
+          github="https://github.com"
+          steam="https://store.steampowered.com"
+          website="https://example.com"
+        >
+          All link types together.
+        </ProjectCard>
+
+        <h2>ExternalLink</h2>
+        <p>A link that opens in a new tab with proper security attributes.</p>
+        <p>
+          Check out <ExternalLink href="https://github.com">GitHub</ExternalLink> for code hosting.
+        </p>
+      </section>
+
+      <section class="theme-section" data-theme="dark">
+        <span class="theme-label">Dark</span>
+
+        <h2>InfoBox</h2>
+        <p>A callout box for highlighting information.</p>
+
+        <InfoBox>
+          This is an InfoBox without a title.
+        </InfoBox>
+        <InfoBox title="Note">
+          This is an InfoBox with a title.
+        </InfoBox>
+
+        <h2>ProjectCard</h2>
+        <p>A card for displaying project information.</p>
+
+        <h3>Status variants</h3>
+        <ProjectCard title="Released" status="released" github="https://github.com">
+          Green indicates shipped and available.
+        </ProjectCard>
+        <ProjectCard title="In Progress" status="in-progress" github="https://github.com">
+          Amber indicates active development.
+        </ProjectCard>
+        <ProjectCard title="Prototype" status="prototype" github="https://github.com">
+          Blue indicates experimental.
+        </ProjectCard>
+        <ProjectCard title="Maintained" status="maintained" github="https://github.com">
+          Teal indicates steady care.
+        </ProjectCard>
+        <ProjectCard title="Abandoned" status="abandoned">
+          Gray indicates inactive.
+        </ProjectCard>
+
+        <h3>With tags</h3>
+        <ProjectCard title="Stalled project" status="in-progress" tags={["stalled"]} github="https://github.com">
+          A project with an additional tag.
+        </ProjectCard>
+        <ProjectCard title="Needs validation" status="abandoned" tags={["validation needed"]}>
+          A project needing validation before revival.
+        </ProjectCard>
+        <ProjectCard title="Multiple tags" status="prototype" tags={["stalled", "needs review"]} github="https://github.com">
+          A project with multiple tags.
+        </ProjectCard>
+
+        <h3>Link variants</h3>
+        <ProjectCard title="GitHub" status="released" github="https://github.com">
+          GitHub link only.
+        </ProjectCard>
+        <ProjectCard title="Steam" status="released" steam="https://store.steampowered.com">
+          Steam link only.
+        </ProjectCard>
+        <ProjectCard title="Website (globe)" status="released" website="https://example.com">
+          Default globe icon.
+        </ProjectCard>
+        <ProjectCard title="Website (itch)" status="released" website="https://itch.io" websiteIcon="itch">
+          Itch.io icon.
+        </ProjectCard>
+        <ProjectCard title="Website (docs)" status="released" website="https://docs.example.com" websiteIcon="docs">
+          Documentation icon.
+        </ProjectCard>
+        <ProjectCard
+          title="All links"
+          status="released"
+          github="https://github.com"
+          steam="https://store.steampowered.com"
+          website="https://example.com"
+        >
+          All link types together.
+        </ProjectCard>
+
+        <h2>ExternalLink</h2>
+        <p>A link that opens in a new tab with proper security attributes.</p>
+        <p>
+          Check out <ExternalLink href="https://github.com">GitHub</ExternalLink> for code hosting.
+        </p>
+      </section>
+    </div>
+  </article>
+</Base>
+
+<style>
+  .kitchen-sink {
+    max-width: 800px;
+    margin: 0 auto;
+  }
+
+  .lead {
+    font-size: 1.2rem;
+    color: var(--pico-muted-color);
+    margin-bottom: 2rem;
+  }
+
+  .theme-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+  }
+
+  .theme-section {
+    padding: 1.5rem;
+    border-radius: var(--pico-border-radius);
+    position: relative;
+    background: var(--pico-background-color);
+    color: var(--pico-color);
+  }
+
+  .theme-label {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    font-weight: 600;
+    opacity: 0.6;
+  }
+
+  .theme-section h2 {
+    margin-top: 2rem;
+    margin-bottom: 0.5rem;
+  }
+
+  .theme-section h2:first-of-type {
+    margin-top: 0;
+  }
+
+  .theme-section h3 {
+    margin-top: 1.5rem;
+    margin-bottom: 0.75rem;
+    font-size: 0.9rem;
+    opacity: 0.7;
+  }
+
+  .theme-section p {
+    margin-bottom: 1rem;
+    opacity: 0.8;
+  }
+</style>
