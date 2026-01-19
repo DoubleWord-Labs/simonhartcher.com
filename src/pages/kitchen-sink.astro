@@ -1,6 +1,7 @@
 ---
 import Base from '../layouts/Base.astro';
 import InfoBox from '../components/InfoBox.astro';
+import Quote from '../components/Quote.astro';
 import ProjectCard from '../components/ProjectCard.astro';
 import ExternalLink from '../components/ExternalLink.astro';
 ---
@@ -27,6 +28,22 @@ import ExternalLink from '../components/ExternalLink.astro';
         <InfoBox title="Note">
           This is an InfoBox with a title.
         </InfoBox>
+
+        <h2>Quote</h2>
+        <p>A styled blockquote for attributing words to someone.</p>
+
+        <Quote>
+          This is a simple quote without attribution.
+        </Quote>
+        <Quote author="Claude">
+          Oh I think I cut you off there. What were you saying?
+        </Quote>
+        <Quote author="Steve Yegge" source="Welcome to Gas Town" sourceUrl="https://steve-yegge.medium.com/welcome-to-gas-town-4f25ee16dd04">
+          I've never seen the code, and I never care to, which might give you pause.
+        </Quote>
+        <Quote source="The Zen of Python">
+          Simple is better than complex.
+        </Quote>
 
         <h2>ProjectCard</h2>
         <p>A card for displaying project information.</p>
@@ -104,6 +121,22 @@ import ExternalLink from '../components/ExternalLink.astro';
         <InfoBox title="Note">
           This is an InfoBox with a title.
         </InfoBox>
+
+        <h2>Quote</h2>
+        <p>A styled blockquote for attributing words to someone.</p>
+
+        <Quote>
+          This is a simple quote without attribution.
+        </Quote>
+        <Quote author="Claude">
+          Oh I think I cut you off there. What were you saying?
+        </Quote>
+        <Quote author="Steve Yegge" source="Welcome to Gas Town" sourceUrl="https://steve-yegge.medium.com/welcome-to-gas-town-4f25ee16dd04">
+          I've never seen the code, and I never care to, which might give you pause.
+        </Quote>
+        <Quote source="The Zen of Python">
+          Simple is better than complex.
+        </Quote>
 
         <h2>ProjectCard</h2>
         <p>A card for displaying project information.</p>
