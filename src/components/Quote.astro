@@ -1,0 +1,103 @@
+---
+export interface Props {
+  author?: string;
+  source?: string;
+  sourceUrl?: string;
+}
+
+const { author, source, sourceUrl } = Astro.props;
+const hasAttribution = author || source;
+---
+
+<figure class="quote-box">
+  <blockquote class="quote-content">
+    <slot />
+  </blockquote>
+  {hasAttribution && (
+    <figcaption class="quote-attribution">
+      {author && <span class="quote-author">{author}</span>}
+      {author && source && <span class="quote-separator">&mdash;</span>}
+      {source && (
+        sourceUrl ? (
+          <a href={sourceUrl} target="_blank" rel="noopener noreferrer" class="quote-source">{source}</a>
+        ) : (
+          <cite class="quote-source">{source}</cite>
+        )
+      )}
+    </figcaption>
+  )}
+</figure>
+
+<style>
+  .quote-box {
+    background: color-mix(in srgb, var(--pico-primary) 6%, var(--pico-code-background-color));
+    border-left: 4px solid var(--pico-primary);
+    padding: 1rem 1rem 1rem 2.5rem;
+    margin: 1.5rem 0;
+    border-radius: var(--pico-border-radius);
+    position: relative;
+  }
+
+  .quote-box::before {
+    content: '\201C';
+    font-family: Georgia, serif;
+    font-size: 3rem;
+    color: var(--pico-primary);
+    opacity: 0.4;
+    position: absolute;
+    left: 0.5rem;
+    top: 0.25rem;
+    line-height: 1;
+  }
+
+  .quote-content {
+    font-size: 0.95rem;
+    font-style: italic;
+    color: var(--pico-color);
+    margin: 0;
+    padding: 0;
+    border: none;
+    background: none;
+  }
+
+  .quote-content :global(p) {
+    margin: 0;
+  }
+
+  .quote-content :global(p + p) {
+    margin-top: 0.5rem;
+  }
+
+  .quote-attribution {
+    margin-top: 0.75rem;
+    font-size: 0.85rem;
+    color: var(--pico-muted-color);
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+  }
+
+  .quote-author {
+    font-weight: 600;
+    color: var(--pico-color);
+  }
+
+  .quote-separator {
+    color: var(--pico-muted-color);
+  }
+
+  .quote-source {
+    font-style: normal;
+  }
+
+  a.quote-source {
+    color: var(--pico-muted-color);
+    text-decoration: underline;
+    text-decoration-style: dotted;
+    text-underline-offset: 2px;
+  }
+
+  a.quote-source:hover {
+    color: var(--pico-primary);
+  }
+</style>
