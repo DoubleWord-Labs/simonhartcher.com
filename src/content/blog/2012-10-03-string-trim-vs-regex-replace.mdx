@@ -1,0 +1,61 @@
+---
+title: "String.Trim vs Regex.Replace"
+description: "A code review lesson on knowing your standard library"
+date: 2012-10-03T00:00:00.000Z
+author: "Simon Hartcher"
+tags: ["code-review", "programming"]
+featured: false
+draft: false
+---
+
+> **Disclaimer:** It has come to my attention that the programmer in this article has read this and was taken aback by my comments. This is not an attack on the programmer in question, although I can see how that impression was given.
+>
+> The point I was trying to make is that programmers are being taught the wrong things. They finish their degrees and have a breadth of knowledge that some of which I don't have, but due to the education system miss out on the staples of being a real working programmer.
+>
+> "University students only learn how to build a space ship"
+
+---
+
+I encountered this line in some code while I was doing a review:
+
+```csharp
+userName = Regex.Replace(userName, "[ ]", "");
+```
+
+It struck me as odd that the programmer would use this in place of `String.Trim()` to "remove whitespace from either side of a string":
+
+```csharp
+userName = userName.Trim(); // this is what I would have done
+```
+
+The programmer's response was that he didn't know about `String.Trim()` and just used what he knew.
+
+I would argue that `String.Trim` is much clearer to someone reading your code (especially if you didn't know regex), but in his case it wouldn't be because he had no idea what `Trim` was. The other side effect is that the regex code in this instance would remove **all the whitespace**, not just leading or trailing.
+
+What baffles me the most is that a programmer can be oblivious of string manipulation methods that are present in practically every language. To cite a few:
+
+[Java](http://docs.oracle.com/javase/6/docs/api/java/lang/String.html#trim()):
+```
+String trim() - Returns a copy of the string, with leading and trailing whitespace omitted.
+```
+
+[C#](http://msdn.microsoft.com/en-us/library/t97s7bs3.aspx):
+```
+Trim() - Removes all leading and trailing white-space characters from the current String object.
+```
+
+[Python](http://docs.python.org/library/stdtypes.html#str.strip):
+```
+str.strip([chars])
+Return a copy of the string with the leading and trailing characters removed.
+```
+
+I'm sure that I could go on. Surely, there would be a similar method in every language that I could think of. I know that I'm picking on `Trim` here but the idea is that those key string manipulation methods are staples:
+
+- ToLower
+- ToUpper
+- Format (printf)
+- SubString
+- EndsWith
+- StartsWith
+- Etc...

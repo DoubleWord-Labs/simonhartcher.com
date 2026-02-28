@@ -1,0 +1,65 @@
+---
+title: "Sublime Text - A Text Editor For Programmers - Part 1 - Package Control"
+description: "My journey through text editors and why Sublime Text won me over"
+date: 2012-07-20T00:00:00.000Z
+author: "Simon Hartcher"
+tags: ["editors", "tools"]
+featured: false
+draft: false
+---
+
+## Come With Me If You Want To Live
+
+The text editor is a programmer's most valuable tool. Without it, you can't write any code at all. It is your life-blood. You need it to survive. It will save you, just like Arnie did. There are plenty of text editors out there that solve one problem or another. There is also a couple of editors that are popular for certain platforms:
+
+- Linux users have [vim](http://www.vim.org/)
+- Mac users have [TextMate](http://macromates.com/)
+- And Windows users have [Notepad++](http://notepad-plus-plus.org/)
+
+There are others (of course) like [Emacs](http://www.gnu.org/s/emacs/), [Programmer's Notepad](http://www.pnotepad.org/), or even plain old Notepad.exe.
+
+## How Did I Get Here?
+
+I have tried a few editors in the last few years.
+
+- I learned vim which was a good experience, but I felt it didn't fit in with the Windows ethos. Being able to edit completely without the help of a mouse was interesting, but I just couldn't break completely free of it.
+- Notepad++ is a solid editor which served me well for several years, but it just isn't nice to look at. It is powerful, but does not have a bustling community making extensions for it. It can also be a bit sluggish to use.
+
+## The Saviour
+
+[Sublime Text](http://www.sublimetext.com/2) is amazing! You only have to watch the demonstrations on [their homepage](http://www.sublimetext.com/) to see why. Unlike all the above editors, [it is not free](http://www.sublimetext.com/buy), but after the 30 day trial I was sold.
+
+## TextMate Compatibility
+
+One of the major drawcards for me (despite not having used TextMate) is that ST2 is 100% compatible with [TextMate Bundles](http://wiki.macromates.com/Main/Bundles). This gives you access to a massive range of add-ons from the super popular Mac editor. Ones that I use are the Pascal and CacheManifest syntax bundles. I also have native packages to create Github Gists, print to HTML and search Stack Overflow to name a few.
+
+## Package Control
+
+Packages can be installed using [Sublime Package Control](http://wbond.net/sublime_packages/package_control). It is a package itself which grants package management right inside Sublime Text. Once installed — you can install, upgrade and uninstall packages using the Command Palette (`Ctrl + Shift + P` on Windows).
+
+**Installing**
+
+To install Package Control we are going to run Python code from the console. Copy the following code and paste it into the Sublime Text console, accessed using `` Ctrl + ` `` and run it by pressing `Enter`.
+
+```python
+import urllib2, os
+
+pf = 'Package Control.sublime-package'
+ipp = sublime.installed_packages_path()
+
+os.makedirs(ipp) if not os.path.exists(ipp) else None
+
+urllib2.install_opener(urllib2.build_opener(urllib2.ProxyHandler()))
+
+open(os.path.join(ipp, pf), 'wb').write(
+    urllib2.urlopen('http://sublime.wbond.net/' + pf.replace(' ', '%20')).read()
+)
+
+print 'Please restart Sublime Text to finish installation'
+```
+
+There are [manual instructions](http://wbond.net/sublime_packages/package_control/installation#Manual_Instructions) if the console install does not work for you.
+
+Once installed, check out the [Usage](http://wbond.net/sublime_packages/package_control/usage) page to get started. Try typing your favourite language into the `Package Control: Install Package` search query.
+
+Stay tuned for more Sublime Text tips :)
