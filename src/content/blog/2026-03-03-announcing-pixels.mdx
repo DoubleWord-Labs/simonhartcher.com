@@ -1,0 +1,129 @@
+---
+title: "Announcing Pixels: Disposable Linux Containers for AI Coding Agents"
+description: "Sandboxed containers that you can run on your own hardware."
+date: 2026-03-03
+author: "Simon Hartcher"
+tags: ["AI", "DevTools", "Linux", "Containers", "Open Source"]
+featured: true
+draft: false
+---
+
+import cover from '2026-03-03-announcing-pixels/assets/cover.png';
+export { cover }
+
+I've been working on a tool called [Pixels](https://github.com/deevus/pixels) and it's ready enough now that I want to talk about it.
+
+Pixels gives you disposable Linux containers purpose-built for AI coding agents. Spin one up, let Claude Code or Codex do their thing inside a sandbox, tear it down when you're done. Each container gets its own IP, snapshot-based checkpoints, and network egress policies that control exactly what the agent can reach. It's written in Go and it's MIT licensed.
+
+## The problem
+
+If you're using AI coding agents, you may be worried about running them in [YOLO mode](https://simonwillison.net/2025/Oct/22/living-dangerously-with-claude/). There are [several](https://fortune.com/2025/07/23/ai-coding-tool-replit-wiped-database-called-it-a-catastrophic-failure/) [examples](https://blog.barrack.ai/amazon-ai-agents-deleting-production/) of [rogue](https://thomas-wiegold.com/blog/claude-code-dangerously-skip-permissions/) [agents](https://www.upguard.com/blog/yolo-mode-hidden-risks-in-claude-code-permissions) in the wild. Replit's AI deleted a production database during a code freeze and then tried to cover it up. Amazon's Kiro agent [reportedly](https://www.theregister.com/2026/02/20/amazon_denies_kiro_agentic_ai_behind_outage/) decided to "delete and recreate" a live AWS Cost Explorer environment, causing a 13-hour outage (Amazon disputes this, calling it misconfigured access controls). Cursor's Plan Mode, explicitly designed to *not* execute anything, [went ahead](https://www.mintmcp.com/blog/cursor-plan-mode-destructive-operations) and `rm -rf`'d 70 files anyway. And UpGuard found that over 22% of publicly committed Claude Code settings files on GitHub had granted `rm:*` permissions.
+
+The obvious answer is a sandbox environment. But the workflow I wanted didn't really exist as a single tool:
+
+1. Create a sandboxed Linux environment with AI tools pre-installed
+2. Do some setup, checkpoint it
+3. Spin up multiple copies from that checkpoint for different tasks
+4. Control what the agent can access on the network
+5. Tear everything down when done
+
+There are services popping up that do some or all of this, but the core thing is I didn't want to *pay* for one. I'm an engineer who builds things for a living and I have a server sitting right here. Why would I send money to someone else for something I can run myself?
+
+## How it started: TrueNAS + Incus
+
+It all started because I wanted to deploy to my TrueNAS server using Terraform. I studied the TrueNAS API and built [terraform-provider-truenas](https://github.com/deevus/terraform-provider-truenas), which I'm now using to manage a web of applications for family, work and play: Tailscale, Pi-hole, productivity tools, Immich, Forgejo, all with Terraform.
+
+Then it occurred to me that I could extract the client code into a library: [truenas-go](https://github.com/deevus/truenas-go). Once that was done and being consumed by the TF provider, I wanted to one-shot (vibe code) a few product ideas overnight while I slept. I wasn't comfortable doing this on the machines I code on every day.
+
+So I `git init`'d a new project while thinking about [Sprites](https://sprites.dev), called it Pixels, pulled in truenas-go and worked away with Claude for a few days. Originally I posted about Pixels on [Lobsters](https://lobste.rs) and got called out for "vibe coding it in 3 days", but I don't really think that's fair. I'd been working away at the TF provider for months at that point. It all built up to this moment.
+
+In that same thread someone commented that they were disappointed that Incus wasn't natively supported. After a bit of consideration, I figured that I could easily write a high level interface (called a `Sandbox`), that backends could implement. First I extracted the TrueNAS backend to great success. Then I pumped out the Incus backend. Since TrueNAS uses Incus over its own WebSocket API, the API was very similar.
+
+## The workflow
+
+Here's what a typical session looks like:
+
+```bash
+# Create a base container with agent network restrictions
+pixels create base --egress agent --console
+
+# You're now in a shell. Install your project deps, configure things.
+# When you're happy with the state, checkpoint it.
+pixels checkpoint create base --label ready
+
+# Now spin up isolated copies for different tasks
+pixels create feature-auth --from base:ready
+pixels create fix-bug-123 --from base:ready
+
+# Each gets its own IP, its own filesystem, its own state.
+# Let your agents loose.
+
+# Clean up
+pixels destroy feature-auth
+pixels destroy fix-bug-123
+```
+
+The `--egress agent` flag is where things get interesting. It sets up nftables rules inside the container that restrict outbound traffic to a curated allowlist: Anthropic, OpenAI, and Google AI APIs, package registries (npm, PyPI, crates.io, Go proxy), GitHub, and Ubuntu package repos. You have full control over what the agent can talk to.
+
+> **Note:** Incus has native egress controls that I will be exploring in future. As it is right now, it's plausible that a highly determined agent might be able to get root inside the sandbox and remove the firewall. See the [`SECURITY.md`](https://github.com/deevus/pixels/blob/main/SECURITY.md) file on GitHub for extra details.
+
+You can also manage the allowlist on the fly:
+
+```bash
+pixels network allow mybox api.mycompany.com
+pixels network deny mybox sketchy-domain.io
+pixels network show mybox
+```
+
+## Agent provisioning
+
+New containers come pre-loaded with dev tools via [mise](https://mise.jdx.dev/): Node.js LTS, Claude Code, Codex, and OpenCode. The recommended workflow is to create base images for different workflows. Install what you need, create a checkpoint, and then create new sandboxes with `--from base` or `--from agent-base` (these aren't preset names, you name them yourself).
+
+If you don't want any of that, `--no-provision` skips everything.
+
+## Checkpoints are the killer feature
+
+ZFS snapshots (or btrfs, depending on your storage backend) make checkpoints essentially free. A checkpoint of a fully provisioned container is typically around 40-50 MiB. Creating one takes seconds. Cloning from a checkpoint is fast. Much faster than provisioning from scratch.
+
+This means you can treat containers like git branches. Set up a known-good state, checkpoint it, and spin up as many divergent copies as you need. When an agent goes sideways, you haven't lost anything. Just destroy and clone fresh.
+
+```bash
+pixels checkpoint create mybox --label ready
+pixels checkpoint list mybox
+# LABEL       SIZE
+# ready       42.0 MiB
+```
+
+## Installation
+
+If you use mise:
+
+```bash
+mise use -g github:deevus/pixels
+```
+
+Or Go:
+
+```bash
+go install github.com/deevus/pixels@latest
+```
+
+You'll need Incus installed (locally or accessible remotely) for the default backend, or a TrueNAS SCALE box for the TrueNAS backend. Configuration lives in `~/.config/pixels/config.toml` by default on Linux (it uses `XDG_CONFIG_HOME`).
+
+## What's next
+
+I have a few things I would still like to do:
+
+- A backend that works on macOS and Windows hosts.
+- Tighten the security posture.
+- Copy/sync files and folders without using scp.
+
+## Try it out
+
+I have been using Pixels (currently at v0.5.0, [check releases](https://github.com/deevus/pixels/releases)) daily for my own agentic workflows. If you're running YOLO AI agents and want proper sandboxing on your own terms, on your own hardware, for the cost of power (and compute, maybe), please try it out.
+
+The repo is at [github.com/deevus/pixels](https://github.com/deevus/pixels). Issues and feedback welcome.
+
+## Support
+
+Need help with development at your org? I offer implementation support, custom development, and training through my consultancy. Email is on my [GitHub profile](https://github.com/deevus).
