@@ -33,7 +33,12 @@ const postUrl = `/posts/${postSlug}`;
     title={post.data.title}
     description={post.data.description}
     image={coverImage.src}
+    imageWidth={coverImage.width}
+    imageHeight={coverImage.height}
     url={postUrl}
+    ogType="article"
+    publishedDate={post.data.date}
+    author={post.data.author}
 >
     <article class="blog-post">
         <div class="cover-image">

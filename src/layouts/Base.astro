@@ -10,10 +10,25 @@ export interface Props {
     title: string;
     description?: string;
     image?: string;
+    imageWidth?: number;
+    imageHeight?: number;
     url?: string;
+    ogType?: "website" | "article";
+    publishedDate?: Date;
+    author?: string;
 }
 
-const { title, description = "Simon Hartcher's Blog", image, url } = Astro.props;
+const {
+    title,
+    description = "Simon Hartcher's Blog",
+    image,
+    imageWidth,
+    imageHeight,
+    url,
+    ogType = "website",
+    publishedDate,
+    author,
+} = Astro.props;
 const siteTitle = "Simon Hartcher";
 const fullTitle = title ? `${title} | ${siteTitle}` : siteTitle;
 const siteUrl = "https://simonhartcher.com";
@@ -33,13 +48,18 @@ const ogImage = image ? (image.startsWith('http') ? image : `${siteUrl}${image}`
         <meta name="description" content={description} />
 
         <!-- Open Graph -->
-        <meta property="og:type" content="website" />
+        <meta property="og:type" content={ogType} />
         <meta property="og:site_name" content={siteTitle} />
         <meta property="og:title" content={fullTitle} />
         <meta property="og:description" content={description} />
         <meta property="og:url" content={canonicalUrl} />
         {ogImage && <meta property="og:image" content={ogImage} />}
         {ogImage && <meta property="og:image:alt" content={title || "Cover image"} />}
+        {ogImage && imageWidth && <meta property="og:image:width" content={String(imageWidth)} />}
+        {ogImage && imageHeight && <meta property="og:image:height" content={String(imageHeight)} />}
+        {ogType === "article" && publishedDate && (
+            <meta property="article:published_time" content={publishedDate.toISOString()} />
+        )}
 
         <!-- Twitter Card -->
         <meta name="twitter:card" content="summary_large_image" />
@@ -52,6 +72,31 @@ const ogImage = image ? (image.startsWith('http') ? image : `${siteUrl}${image}`
         <meta http-equiv="x-ua-compatible" content="ie=edge" />
         <link rel="canonical" href={canonicalUrl} />
         <title>{fullTitle}</title>
+        {ogType === "article" && publishedDate && (
+            <script type="application/ld+json" set:html={JSON.stringify({
+                "@context": "https://schema.org",
+                "@type": "BlogPosting",
+                "headline": title,
+                "description": description,
+                "datePublished": publishedDate.toISOString(),
+                "author": {
+                    "@type": "Person",
+                    "name": author || "Simon Hartcher",
+                    "url": "https://simonhartcher.com/about"
+                },
+                "publisher": {
+                    "@type": "Person",
+                    "name": "Simon Hartcher",
+                    "url": "https://simonhartcher.com"
+                },
+                "url": canonicalUrl,
+                ...(ogImage ? { "image": ogImage } : {}),
+                "mainEntityOfPage": {
+                    "@type": "WebPage",
+                    "@id": canonicalUrl
+                }
+            })} />
+        )}
 
         <!-- Favicons -->
         <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
